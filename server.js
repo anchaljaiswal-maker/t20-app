@@ -82,16 +82,6 @@ app.get('/api/players', (req, res) => {
     });
 });
 
-// Force refresh endpoint
-app.get('/api/refresh', (req, res) => {
-    if (isScraperRunning) {
-        return res.json({ success: true, message: 'Refresh already in progress' });
-    }
-
-    runScraperInBackground();
-    res.json({ success: true, message: 'Refresh started' });
-});
-
 // Health check endpoint
 app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
@@ -103,16 +93,15 @@ app.listen(PORT, () => {
     console.log(`========================================`);
     console.log(`Dashboard: http://localhost:${PORT}`);
     console.log(`API: http://localhost:${PORT}/api/players`);
-    console.log(`Auto-refresh: Every 5 minutes`);
+    console.log(`Auto-refresh: Every 6 hours`);
     console.log(`========================================\n`);
 
-    // Auto-refresh every 5 minutes (server-side, not user-triggered)
-    const AUTO_REFRESH_INTERVAL = 5 * 60 * 1000; // 5 minutes
+    // Auto-refresh every 6 hours (server-side, not user-triggered)
+    const AUTO_REFRESH_INTERVAL = 6 * 60 * 60 * 1000; // 6 hours
 
-    // Initial refresh on startup if no data
-    if (!cachedPoints) {
-        runScraperInBackground();
-    }
+    // Always refresh on startup (handles Render free tier spin-up after inactivity)
+    console.log('Running initial scraper on startup...');
+    runScraperInBackground();
 
     // Schedule automatic refreshes
     setInterval(() => {
