@@ -321,7 +321,14 @@
         <p>Track your fantasy team points in real-time</p>
     </div>
 
-    <div class="last-updated" id="lastUpdated">Points auto-update every 6 hours</div>
+    <div class="controls">
+        <button class="refresh-btn" id="refreshBtn" onclick="refreshPoints()">
+            <span class="spinner" id="spinner"></span>
+            <span id="btnText">Update Scores</span>
+        </button>
+    </div>
+
+    <div class="last-updated" id="lastUpdated">Scores can be refreshed once every 30 minutes</div>
 
     <div class="legend">
         <div class="legend-item">
@@ -978,6 +985,40 @@
             }
         }
         autoLoadData();
+
+        // Refresh scores with password
+        async function refreshPoints() {
+            const password = prompt('Enter password to update scores:');
+            if (!password) return;
+
+            const btn = document.getElementById('refreshBtn');
+            const btnText = document.getElementById('btnText');
+            const spinner = document.getElementById('spinner');
+
+            btn.disabled = true;
+            btn.classList.add('loading');
+            btnText.textContent = 'Updating...';
+
+            try {
+                const response = await fetch(`/api/refresh?key=${encodeURIComponent(password)}`);
+                const result = await response.json();
+
+                alert(result.message);
+
+                if (result.success) {
+                    // Reload data after a delay
+                    setTimeout(async () => {
+                        await autoLoadData();
+                    }, 60000); // Wait 1 minute for scraper to finish
+                }
+            } catch (e) {
+                alert('Error: Could not refresh scores');
+            }
+
+            btn.disabled = false;
+            btn.classList.remove('loading');
+            btnText.textContent = 'Update Scores';
+        }
 
         console.log('T20 Fantasy Dashboard loaded!');
     </script>

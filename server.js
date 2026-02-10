@@ -90,6 +90,33 @@ app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// Refresh endpoint with password + 30-minute rate limit
+const RATE_LIMIT = 30 * 60 * 1000; // 30 minutes
+const REFRESH_PASSWORD = process.env.REFRESH_PASSWORD || 't20refresh';
+
+app.get('/api/refresh', (req, res) => {
+    // Check password
+    if (req.query.key !== REFRESH_PASSWORD) {
+        return res.json({ success: false, message: 'Incorrect password' });
+    }
+
+    // Check if scraper is already running
+    if (isScraperRunning) {
+        return res.json({ success: false, message: 'Refresh already in progress...' });
+    }
+
+    // Check rate limit
+    const timeSinceLastRun = lastFetchTime ? Date.now() - lastFetchTime : RATE_LIMIT + 1;
+    if (timeSinceLastRun < RATE_LIMIT) {
+        const waitMinutes = Math.ceil((RATE_LIMIT - timeSinceLastRun) / 60000);
+        return res.json({ success: false, message: `Please wait ${waitMinutes} more minute(s) before refreshing` });
+    }
+
+    // Run scraper
+    runScraperInBackground();
+    res.json({ success: true, message: 'Refreshing scores... Page will update in ~1 minute' });
+});
+
 app.listen(PORT, () => {
     console.log(`\n========================================`);
     console.log(`T20 Fantasy Dashboard Server Running!`);
