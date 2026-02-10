@@ -40,6 +40,9 @@ function runScraperInBackground() {
     exec('python3 scraper.py', { cwd: __dirname, timeout: 180000 }, (error, stdout, stderr) => {
         isScraperRunning = false;
 
+        if (stdout) console.log('Scraper output:', stdout);
+        if (stderr) console.error('Scraper stderr:', stderr);
+
         if (error) {
             console.error('Scraper error:', error.message);
             return;
