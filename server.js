@@ -58,39 +58,27 @@ function runScraperInBackground() {
     });
 }
 
-// API endpoint to get player points
+// API endpoint to get player points (just returns cached data, never triggers scraper)
 app.get('/api/players', (req, res) => {
-    // Always return cached data immediately (non-blocking)
     if (cachedPoints) {
-        const needsRefresh = !lastFetchTime || (Date.now() - lastFetchTime > CACHE_DURATION);
-
-        // Start background refresh if needed
-        if (needsRefresh && !isScraperRunning) {
-            runScraperInBackground();
-        }
-
         return res.json({
             success: true,
             data: cachedPoints,
             cached: true,
             count: Object.keys(cachedPoints).length,
+            lastUpdated: lastFetchTime ? new Date(lastFetchTime).toISOString() : null,
             refreshing: isScraperRunning
         });
     }
 
-    // No cached data - need to wait for scraper
-    if (!isScraperRunning) {
-        runScraperInBackground();
-    }
-
-    // Return empty with message
+    // No data yet - server is still starting up
     res.json({
         success: true,
         data: {},
         cached: false,
         count: 0,
-        message: 'Loading player data... Please refresh in 30 seconds.',
-        refreshing: true
+        message: 'Server starting up... Data will load in ~30 seconds.',
+        refreshing: isScraperRunning
     });
 });
 
@@ -115,5 +103,20 @@ app.listen(PORT, () => {
     console.log(`========================================`);
     console.log(`Dashboard: http://localhost:${PORT}`);
     console.log(`API: http://localhost:${PORT}/api/players`);
+    console.log(`Auto-refresh: Every 5 minutes`);
     console.log(`========================================\n`);
+
+    // Auto-refresh every 5 minutes (server-side, not user-triggered)
+    const AUTO_REFRESH_INTERVAL = 5 * 60 * 1000; // 5 minutes
+
+    // Initial refresh on startup if no data
+    if (!cachedPoints) {
+        runScraperInBackground();
+    }
+
+    // Schedule automatic refreshes
+    setInterval(() => {
+        console.log('Auto-refresh triggered...');
+        runScraperInBackground();
+    }, AUTO_REFRESH_INTERVAL);
 });
