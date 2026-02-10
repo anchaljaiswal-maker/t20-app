@@ -4,13 +4,13 @@ Scraper for cricketxi.com T20 World Cup 2026 player points
 """
 import time
 import json
+import os
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait, Select
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
 
 def scrape_players():
     """Scrape all players and their points from cricketxi.com"""
@@ -20,11 +20,24 @@ def scrape_players():
     options.add_argument('--headless')
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
+    options.add_argument('--disable-gpu')
     options.add_argument('--window-size=1920,1080')
     options.add_argument('user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36')
 
+    # Use system Chromium if available (for Docker/Render)
+    chrome_bin = os.environ.get('CHROME_BIN')
+    if chrome_bin:
+        options.binary_location = chrome_bin
+
     print("Starting Chrome...")
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+
+    # Use system chromedriver if available, otherwise use webdriver-manager
+    chromedriver_path = os.environ.get('CHROMEDRIVER_PATH', '/usr/bin/chromedriver')
+    if os.path.exists(chromedriver_path):
+        driver = webdriver.Chrome(service=Service(chromedriver_path), options=options)
+    else:
+        from webdriver_manager.chrome import ChromeDriverManager
+        driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
     try:
         print("Loading page...")
