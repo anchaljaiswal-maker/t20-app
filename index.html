@@ -866,10 +866,14 @@
             renderTeams();
         }
 
-        function updateLastUpdated() {
-            const now = new Date();
+        function updateLastUpdated(serverTimestamp) {
+            let timeStr = 'Unknown';
+            if (serverTimestamp) {
+                const date = new Date(serverTimestamp);
+                timeStr = `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+            }
             document.getElementById('lastUpdated').textContent =
-                `Last updated: ${now.toLocaleDateString()} ${now.toLocaleTimeString()}`;
+                `Last updated: ${timeStr} | Scores refresh automatically every 6 hours`;
         }
 
         function showModal(message) {
@@ -964,19 +968,18 @@
                 const result = await response.json();
                 if (result.success && result.data && Object.keys(result.data).length > 0) {
                     Object.assign(playerPoints, result.data);
-                    updateLastUpdated();
+                    updateLastUpdated(result.lastUpdated);
                     renderLeaderboard();
                     renderTeams();
                     console.log(`Auto-loaded ${result.count} players`);
                 }
             } catch (e) {
-                console.log('Auto-load failed, click Refresh to load data');
+                console.log('Auto-load failed');
             }
         }
         autoLoadData();
 
         console.log('T20 Fantasy Dashboard loaded!');
-        console.log('Click Refresh to get latest points from cricketxi.com');
     </script>
 </body>
 </html>
