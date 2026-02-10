@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: t20-fantasy-dashboard
+    env: docker
+    plan: free
+    healthCheckPath: /api/health

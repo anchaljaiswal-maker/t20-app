@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T20 World Cup 2026 Fantasy Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .header {
+            background: linear-gradient(90deg, #0f3460 0%, #533483 100%);
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            padding: 20px;
+            flex-wrap: wrap;
+        }
+
+        .refresh-btn {
+            background: linear-gradient(90deg, #e94560 0%, #533483 100%);
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            font-size: 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .refresh-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(233, 69, 96, 0.4);
+        }
+
+        .refresh-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .refresh-btn .spinner {
+            display: none;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #fff;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .refresh-btn.loading .spinner {
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .last-updated {
+            color: #888;
+            font-size: 0.85rem;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .leaderboard {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .leaderboard h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #e94560;
+        }
+
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .leaderboard-table th,
+        .leaderboard-table td {
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        .leaderboard-table th {
+            background: rgba(233, 69, 96, 0.2);
+            color: #e94560;
+        }
+
+        .leaderboard-table tr:nth-child(even) {
+            background: rgba(255,255,255,0.03);
+        }
+
+        .leaderboard-table tr:hover {
+            background: rgba(233, 69, 96, 0.1);
+        }
+
+        .rank {
+            font-weight: bold;
+            color: #e94560;
+        }
+
+        .rank-1 { color: #ffd700; }
+        .rank-2 { color: #c0c0c0; }
+        .rank-3 { color: #cd7f32; }
+
+        .teams-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .team-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+
+        .team-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .team-header {
+            background: linear-gradient(90deg, #0f3460 0%, #533483 100%);
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .team-name {
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        .team-points {
+            background: #e94560;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .team-players {
+            padding: 15px;
+        }
+
+        .player-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .player-row:last-child {
+            border-bottom: none;
+        }
+
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .player-name {
+            font-size: 0.9rem;
+        }
+
+        .badge {
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .badge-captain {
+            background: #ffd700;
+            color: #000;
+        }
+
+        .badge-vc {
+            background: #c0c0c0;
+            color: #000;
+        }
+
+        .player-points {
+            font-weight: bold;
+            color: #4ade80;
+        }
+
+        .player-points.multiplied {
+            color: #fbbf24;
+        }
+
+        .team-winner {
+            background: rgba(233, 69, 96, 0.1);
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+        }
+
+        .team-winner-label {
+            color: #888;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            padding: 20px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: #aaa;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #1a1a2e;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .modal-content h3 {
+            margin-bottom: 15px;
+            color: #e94560;
+        }
+
+        .modal-content p {
+            margin-bottom: 20px;
+            color: #aaa;
+        }
+
+        .modal-content button {
+            background: #e94560;
+            border: none;
+            color: white;
+            padding: 10px 25px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .teams-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>T20 World Cup 2026 Fantasy Dashboard</h1>
+        <p>Track your fantasy team points in real-time</p>
+    </div>
+
+    <div class="controls">
+        <button class="refresh-btn" onclick="refreshPoints()">
+            <span class="spinner"></span>
+            <span>Refresh Points</span>
+        </button>
+    </div>
+
+    <div class="last-updated" id="lastUpdated">Last updated: Never</div>
+
+    <div class="legend">
+        <div class="legend-item">
+            <span class="badge badge-captain">C</span>
+            <span>Captain (2x points)</span>
+        </div>
+        <div class="legend-item">
+            <span class="badge badge-vc">VC</span>
+            <span>Vice-Captain (1.5x points)</span>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="leaderboard">
+            <h2>Leaderboard</h2>
+            <table class="leaderboard-table">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Team</th>
+                        <th>Total Points</th>
+                        <th>Team Winner</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboardBody">
+                </tbody>
+            </table>
+        </div>
+
+        <div class="teams-grid" id="teamsGrid">
+        </div>
+    </div>
+
+    <div class="modal" id="errorModal">
+        <div class="modal-content">
+            <h3>Unable to Fetch Live Data</h3>
+            <p id="errorMessage">The player points API is not accessible. Using cached/sample data instead.</p>
+            <button onclick="closeModal()">OK</button>
+        </div>
+    </div>
+
+    <script>
+        // Team data from PDF
+        const teams = [
+            {
+                name: "Team Abhishek",
+                teamWinner: "India",
+                players: [
+                    { name: "Abhishek Sharma", team: "India", role: "Batsman", status: "Normal" },
+                    { name: "Ishan Kishan", team: "India", role: "Batsman", status: "Captain" },
+                    { name: "Travis Head", team: "Australia", role: "Batsman", status: "Vice-Captain" },
+                    { name: "Phil Salt", team: "England", role: "Batsman", status: "Normal" },
+                    { name: "Hardik Pandya", team: "India", role: "All-Rounder", status: "Normal" },
+                    { name: "Marco Jansen", team: "South Africa", role: "All-Rounder", status: "Normal" },
+                    { name: "Sam Curran", team: "England", role: "All-Rounder", status: "Normal" },
+                    { name: "Adam Zampa", team: "Australia", role: "Bowler", status: "Normal" },
+                    { name: "Matheesha Pathirana", team: "Sri Lanka", role: "Bowler", status: "Normal" },
+                    { name: "Keshav Maharaj", team: "South Africa", role: "Bowler", status: "Normal" },
+                    { name: "Mitchell Santner", team: "New Zealand", role: "Bowler", status: "Normal" }
+                ]
+            },
+            {
+                name: "Team Akshit",
+                teamWinner: "India",
+                players: [
+                    { name: "Travis Head", team: "Australia", role: "Batsman", status: "Normal" },
+                    { name: "Abhishek Sharma", team: "India", role: "Batsman", status: "Captain" },
+                    { name: "Fakhar Zaman", team: "Pakistan", role: "Batsman", status: "Normal" },
+                    { name: "Phil Salt", team: "England", role: "Batsman", status: "Normal" },
+                    { name: "Hardik Pandya", team: "India", role: "All-Rounder", status: "Normal" },
+                    { name: "Marcus Stoinis", team: "Australia", role: "All-Rounder", status: "Vice-Captain" },
+                    { name: "Jamie Overton", team: "England", role: "All-Rounder", status: "Normal" },
+                    { name: "Matt Henry", team: "New Zealand", role: "Bowler", status: "Normal" },
+                    { name: "Varun Chakravarthy", team: "India", role: "Bowler", status: "Normal" },
+                    { name: "Naseem Shah", team: "Pakistan", role: "Bowler", status: "Normal" },
+                    { name: "Keshav Maharaj", team: "South Africa", role: "Bowler", status: "Normal" }
+                ]
+            },
+            {
+                name: "Team Anchal",
+                teamWinner: "India",
+                players: [
+                    { name: "Travis Head", team: "Australia", role: "Batsman", status: "Normal" },
+                    { name: "Abhishek Sharma", team: "India", role: "Batsman", status: "Vice-Captain" },
+                    { name: "Aiden Markram", team: "South Africa", role: "Batsman", status: "Normal" },
+                    { name: "Phil Salt", team: "England", role: "Batsman", status: "Normal" },
+                    { name: "Hardik Pandya", team: "India", role: "All-Rounder", status: "Captain" },
+                    { name: "Sam Curran", team: "England", role: "All-Rounder", status: "Normal" },
+                    { name: "Marcus Stoinis", team: "Australia", role: "All-Rounder", status: "Normal" },
+                    { name: "Rashid Khan", team: "Afghanistan", role: "Bowler", status: "Normal" },
+                    { name: "Mitchell Santner", team: "New Zealand", role: "Bowler", status: "Normal" },
+                    { name: "Adil Rashid", team: "England", role: "Bowler", status: "Normal" },
+                    { name: "Akeal Hosein", team: "West Indies", role: "Bowler", status: "Normal" }
+                ]
+            },
+            {
+                name: "Team Ankit",
+                teamWinner: "India",
+                players: [
+                    { name: "Abhishek Sharma", team: "India", role: "Batsman", status: "Normal" },
+                    { name: "Suryakumar Yadav", team: "India", role: "Batsman", status: "Normal" },
+                    { name: "Travis Head", team: "Australia", role: "Batsman", status: "Normal" },
+                    { name: "Jos Buttler", team: "England", role: "Batsman", status: "Normal" },
+                    { name: "Hardik Pandya", team: "India", role: "All-Rounder", status: "Captain" },
+                    { name: "Daryl Mitchell", team: "New Zealand", role: "All-Rounder", status: "Vice-Captain" },
+                    { name: "Marco Jansen", team: "South Africa", role: "All-Rounder", status: "Normal" },
+                    { name: "Adam Zampa", team: "Australia", role: "Bowler", status: "Normal" },
+                    { name: "Mitchell Santner", team: "New Zealand", role: "Bowler", status: "Normal" },
+                    { name: "Kagiso Rabada", team: "South Africa", role: "Bowler", status: "Normal" },
+                    { name: "Jofra Archer", team: "England", role: "Bowler", status: "Normal" }
+                ]
+            },
+            {
+                name: "Team Ashok",
+                teamWinner: "India",
+                players: [
+                    { name: "Abhishek Sharma", team: "India", role: "Batsman", status: "Vice-Captain" },
+                    { name: "Mitchell Marsh", team: "Australia", role: "Batsman", status: "Captain" },
+                    { name: "Tim Seifert", team: "New Zealand", role: "Batsman", status: "Normal" },
+                    { name: "Jos Buttler", team: "England", role: "Batsman", status: "Normal" },
+                    { name: "Hardik Pandya", team: "India", role: "All-Rounder", status: "Normal" },
+                    { name: "Marco Jansen", team: "South Africa", role: "All-Rounder", status: "Normal" },
+                    { name: "Cameron Green", team: "Australia", role: "All-Rounder", status: "Normal" },
+                    { name: "Akeal Hosein", team: "West Indies", role: "Bowler", status: "Normal" },
+                    { name: "Varun Chakravarthy", team: "India", role: "Bowler", status: "Normal" },
+                    { name: "Jacob Duffy", team: "New Zealand", role: "Bowler", status: "Normal" },
+                    { name: "Dushmantha Chameera", team: "Sri Lanka", role: "Bowler", status: "Normal" }
+                ]
+            },
+            {
+                name: "Team Burhan",
+                teamWinner: "India",
+                players: [
+                    { name: "Travis Head", team: "Australia", role: "Batsman", status: "Normal" },
+                    { name: "Ishan Kishan", team: "India", role: "Batsman", status: "Vice-Captain" },
+                    { name: "Saim Ayub", team: "Pakistan", role: "Batsman", status: "Normal" },
+                    { name: "Jos Buttler", team: "England", role: "Batsman", status: "Normal" },
+                    { name: "Hardik Pandya", team: "India", role: "All-Rounder", status: "Captain" },
+                    { name: "Marco Jansen", team: "South Africa", role: "All-Rounder", status: "Normal" },
+                    { name: "Romario Shepherd", team: "West Indies", role: "All-Rounder", status: "Normal" },
+                    { name: "Mitchell Santner", team: "New Zealand", role: "Bowler", status: "Normal" },
+                    { name: "Adil Rashid", team: "England", role: "Bowler", status: "Normal" },
+                    { name: "Kagiso Rabada", team: "South Africa", role: "Bowler", status: "Normal" },
+                    { name: "Akeal Hosein", team: "West Indies", role: "Bowler", status: "Normal" }
+                ]
+            },
+            {
+                name: "Team Deepak",
+                teamWinner: "India",
+                players: [
+                    { name: "Abhishek Sharma", team: "India", role: "Batsman", status: "Captain" },
+                    { name: "Ishan Kishan", team: "India", role: "Batsman", status: "Normal" },
+                    { name: "Travis Head", team: "Australia", role: "Batsman", status: "Normal" },
+                    { name: "Jos Buttler", team: "England", role: "Batsman", status: "Vice-Captain" },
+                    { name: "Hardik Pandya", team: "India", role: "All-Rounder", status: "Normal" },
+                    { name: "Marco Jansen", team: "South Africa", role: "All-Rounder", status: "Normal" },
+                    { name: "Sam Curran", team: "England", role: "All-Rounder", status: "Normal" },
+                    { name: "Adam Zampa", team: "Australia", role: "Bowler", status: "Normal" },
+                    { name: "Mitchell Santner", team: "New Zealand", role: "Bowler", status: "Normal" },
+                    { name: "Matt Henry", team: "New Zealand", role: "Bowler", status: "Normal" },
+                    { name: "Rashid Khan", team: "Afghanistan", role: "Bowler", status: "Normal" }
+                ]
+            },
+            {
+                name: "Team Dhiraj",
+                teamWinner: "Australia",
+                players: [
+                    { name: "Quinton de Kock", team: "South Africa", role: "Batsman", status: "Normal" },
+                    { name: "Mitchell Marsh", team: "Australia", role: "Batsman", status: "Captain" },
+                    { name: "Travis Head", team: "Australia", role: "Batsman", status: "Vice-Captain" },
+                    { name: "Jos Buttler", team: "England", role: "Batsman", status: "Normal" },
+                    { name: "Hardik Pandya", team: "India", role: "All-Rounder", status: "Normal" },
+                    { name: "Axar Patel", team: "India", role: "All-Rounder", status: "Normal" },
+                    { name: "Rachin Ravindra", team: "New Zealand", role: "All-Rounder", status: "Normal" },
+                    { name: "Jasprit Bumrah", team: "India", role: "Bowler", status: "Normal" },
+                    { name: "Kagiso Rabada", team: "South Africa", role: "Bowler", status: "Normal" },
+                    { name: "Jofra Archer", team: "England", role: "Bowler", status: "Normal" },
+                    { name: "Lockie Ferguson", team: "New Zealand", role: "Bowler", status: "Normal" }
+                ]
+            },
+            {
+                name: "Team Hiren",
+                teamWinner: "South Africa",
+                players: [
+                    { name: "Ishan Kishan", team: "India", role: "Batsman", status: "Normal" },
+                    { name: "Quinton de Kock", team: "South Africa", role: "Batsman", status: "Captain" },
+                    { name: "Jos Buttler", team: "England", role: "Batsman", status: "Vice-Captain" },
+                    { name: "Ryan Rickelton", team: "South Africa", role: "Batsman", status: "Normal" },
+                    { name: "Marcus Stoinis", team: "Australia", role: "All-Rounder", status: "Normal" },
+                    { name: "Sam Curran", team: "England", role: "All-Rounder", status: "Normal" },
+                    { name: "Mohammad Nawaz", team: "Pakistan", role: "All-Rounder", status: "Normal" },
+                    { name: "Arshdeep Singh", team: "India", role: "Bowler", status: "Normal" },
+                    { name: "Ben Dwarshuis", team: "Australia", role: "Bowler", status: "Normal" },
+                    { name: "Anrich Nortje", team: "South Africa", role: "Bowler", status: "Normal" },
+                    { name: "Lockie Ferguson", team: "New Zealand", role: "Bowler", status: "Normal" }
+                ]
+            },
+            {
+                name: "Team Hitesh",
+                teamWinner: "India",
+                players: [
+                    { name: "Suryakumar Yadav", team: "India", role: "Batsman", status: "Captain" },
+                    { name: "Glenn Phillips", team: "New Zealand", role: "Batsman", status: "Normal" },
+                    { name: "Jos Buttler", team: "England", role: "Batsman", status: "Normal" },
+                    { name: "Travis Head", team: "Australia", role: "Batsman", status: "Normal" },
+                    { name: "Sam Curran", team: "England", role: "All-Rounder", status: "Normal" },
+                    { name: "Axar Patel", team: "India", role: "All-Rounder", status: "Normal" },
+                    { name: "Marco Jansen", team: "South Africa", role: "All-Rounder", status: "Vice-Captain" },
+                    { name: "Lockie Ferguson", team: "New Zealand", role: "Bowler", status: "Normal" },
+                    { name: "Matheesha Pathirana", team: "Sri Lanka", role: "Bowler", status: "Normal" },
+                    { name: "Arshdeep Singh", team: "India", role: "Bowler", status: "Normal" },
+                    { name: "Adam Zampa", team: "Australia", role: "Bowler", status: "Normal" }
+                ]
+            },
+            {
+                name: "Team Kamlesh",
+                teamWinner: "India",
+                players: [
+                    { name: "Abhishek Sharma", team: "India", role: "Batsman", status: "Normal" },
+                    { name: "Ishan Kishan", team: "India", role: "Batsman", status: "Captain" },
+                    { name: "Quinton de Kock", team: "South Africa", role: "Batsman", status: "Normal" },
+                    { name: "Travis Head", team: "Australia", role: "Batsman", status: "Vice-Captain" },
+                    { name: "Rachin Ravindra", team: "New Zealand", role: "All-Rounder", status: "Normal" },
+                    { name: "Hardik Pandya", team: "India", role: "All-Rounder", status: "Normal" },
+                    { name: "Marcus Stoinis", team: "Australia", role: "All-Rounder", status: "Normal" },
+                    { name: "Jofra Archer", team: "England", role: "Bowler", status: "Normal" },
+                    { name: "Mitchell Santner", team: "New Zealand", role: "Bowler", status: "Normal" },
+                    { name: "Lungi Ngidi", team: "South Africa", role: "Bowler", status: "Normal" },
+                    { name: "Matheesha Pathirana", team: "Sri Lanka", role: "Bowler", status: "Normal" }
+                ]
+            },
+            {
+                name: "Team Meet",
+                teamWinner: "India",
+                players: [
+                    { name: "Mitchell Marsh", team: "Australia", role: "Batsman", status: "Normal" },
+                    { name: "Tim Seifert", team: "New Zealand", role: "Batsman", status: "Normal" },
+                    { name: "Ishan Kishan", team: "India", role: "Batsman", status: "Captain" },
+                    { name: "Tilak Varma", team: "India", role: "Batsman", status: "Normal" },
+                    { name: "Daryl Mitchell", team: "New Zealand", role: "All-Rounder", status: "Normal" },
+                    { name: "Marco Jansen", team: "South Africa", role: "All-Rounder", status: "Normal" },
+                    { name: "Azmatullah Omarzai", team: "Afghanistan", role: "All-Rounder", status: "Normal" },
+                    { name: "Rashid Khan", team: "Afghanistan", role: "Bowler", status: "Normal" },
+                    { name: "Kagiso Rabada", team: "South Africa", role: "Bowler", status: "Normal" },
+                    { name: "Adam Zampa", team: "Australia", role: "Bowler", status: "Normal" },
+                    { name: "Arshdeep Singh", team: "India", role: "Bowler", status: "Vice-Captain" }
+                ]
+            },
+            {
+                name: "Team Mitul",
+                teamWinner: "India",
+                players: [
+                    { name: "Abhishek Sharma", team: "India", role: "Batsman", status: "Vice-Captain" },
+                    { name: "Suryakumar Yadav", team: "India", role: "Batsman", status: "Normal" },
+                    { name: "Glenn Phillips", team: "New Zealand", role: "Batsman", status: "Normal" },
+                    { name: "Quinton de Kock", team: "South Africa", role: "Batsman", status: "Normal" },
+                    { name: "Hardik Pandya", team: "India", role: "All-Rounder", status: "Captain" },
+                    { name: "Marco Jansen", team: "South Africa", role: "All-Rounder", status: "Normal" },
+                    { name: "Sam Curran", team: "England", role: "All-Rounder", status: "Normal" },
+                    { name: "Noor Ahmad", team: "Afghanistan", role: "Bowler", status: "Normal" },
+                    { name: "Akeal Hosein", team: "West Indies", role: "Bowler", status: "Normal" },
+                    { name: "Abrar Ahmed", team: "Pakistan", role: "Bowler", status: "Normal" },
+                    { name: "Xavier Bartlett", team: "Australia", role: "Bowler", status: "Normal" }
+                ]
+            },
+            {
+                name: "Team Naabil",
+                teamWinner: "India",
+                players: [
+                    { name: "Travis Head", team: "Australia", role: "Batsman", status: "Normal" },
+                    { name: "Abhishek Sharma", team: "India", role: "Batsman", status: "Vice-Captain" },
+                    { name: "Dewald Brevis", team: "South Africa", role: "Batsman", status: "Normal" },
+                    { name: "Finn Allen", team: "New Zealand", role: "Batsman", status: "Normal" },
+                    { name: "Marco Jansen", team: "South Africa", role: "All-Rounder", status: "Normal" },
+                    { name: "Hardik Pandya", team: "India", role: "All-Rounder", status: "Captain" },
+                    { name: "Cameron Green", team: "Australia", role: "All-Rounder", status: "Normal" },
+                    { name: "Abrar Ahmed", team: "Pakistan", role: "Bowler", status: "Normal" },
+                    { name: "Mitchell Santner", team: "New Zealand", role: "Bowler", status: "Normal" },
+                    { name: "Naseem Shah", team: "Pakistan", role: "Bowler", status: "Normal" },
+                    { name: "Varun Chakravarthy", team: "India", role: "Bowler", status: "Normal" }
+                ]
+            },
+            {
+                name: "Team Paresh",
+                teamWinner: "India",
+                players: [
+                    { name: "Abhishek Sharma", team: "India", role: "Batsman", status: "Vice-Captain" },
+                    { name: "Ishan Kishan", team: "India", role: "Batsman", status: "Captain" },
+                    { name: "Quinton de Kock", team: "South Africa", role: "Batsman", status: "Normal" },
+                    { name: "Phil Salt", team: "England", role: "Batsman", status: "Normal" },
+                    { name: "Hardik Pandya", team: "India", role: "All-Rounder", status: "Normal" },
+                    { name: "Marco Jansen", team: "South Africa", role: "All-Rounder", status: "Normal" },
+                    { name: "Shadab Khan", team: "Pakistan", role: "All-Rounder", status: "Normal" },
+                    { name: "Matheesha Pathirana", team: "Sri Lanka", role: "Bowler", status: "Normal" },
+                    { name: "Ben Dwarshuis", team: "Australia", role: "Bowler", status: "Normal" },
+                    { name: "Lockie Ferguson", team: "New Zealand", role: "Bowler", status: "Normal" },
+                    { name: "Naseem Shah", team: "Pakistan", role: "Bowler", status: "Normal" }
+                ]
+            },
+            {
+                name: "Team Pinesh",
+                teamWinner: "India",
+                players: [
+                    { name: "Ishan Kishan", team: "India", role: "Batsman", status: "Captain" },
+                    { name: "Jos Buttler", team: "England", role: "Batsman", status: "Normal" },
+                    { name: "Tim Seifert", team: "New Zealand", role: "Batsman", status: "Normal" },
+                    { name: "Aiden Markram", team: "South Africa", role: "Batsman", status: "Normal" },
+                    { name: "Hardik Pandya", team: "India", role: "All-Rounder", status: "Normal" },
+                    { name: "Cameron Green", team: "Australia", role: "All-Rounder", status: "Normal" },
+                    { name: "Marco Jansen", team: "South Africa", role: "All-Rounder", status: "Normal" },
+                    { name: "Varun Chakravarthy", team: "India", role: "Bowler", status: "Vice-Captain" },
+                    { name: "Matt Henry", team: "New Zealand", role: "Bowler", status: "Normal" },
+                    { name: "Jofra Archer", team: "England", role: "Bowler", status: "Normal" },
+                    { name: "Adam Zampa", team: "Australia", role: "Bowler", status: "Normal" }
+                ]
+            },
+            {
+                name: "Team Piyush",
+                teamWinner: "India",
+                players: [
+                    { name: "Abhishek Sharma", team: "India", role: "Batsman", status: "Captain" },
+                    { name: "Ishan Kishan", team: "India", role: "Batsman", status: "Vice-Captain" },
+                    { name: "Travis Head", team: "Australia", role: "Batsman", status: "Normal" },
+                    { name: "Ryan Rickelton", team: "South Africa", role: "Batsman", status: "Normal" },
+                    { name: "Marco Jansen", team: "South Africa", role: "All-Rounder", status: "Normal" },
+                    { name: "Cameron Green", team: "Australia", role: "All-Rounder", status: "Normal" },
+                    { name: "Hardik Pandya", team: "India", role: "All-Rounder", status: "Normal" },
+                    { name: "Mitchell Santner", team: "New Zealand", role: "Bowler", status: "Normal" },
+                    { name: "Adil Rashid", team: "England", role: "Bowler", status: "Normal" },
+                    { name: "Jofra Archer", team: "England", role: "Bowler", status: "Normal" },
+                    { name: "Wanindu Hasaranga", team: "Sri Lanka", role: "Bowler", status: "Normal" }
+                ]
+            },
+            {
+                name: "Team Preet",
+                teamWinner: "India",
+                players: [
+                    { name: "Abhishek Sharma", team: "India", role: "Batsman", status: "Captain" },
+                    { name: "Aiden Markram", team: "South Africa", role: "Batsman", status: "Normal" },
+                    { name: "Mitchell Marsh", team: "Australia", role: "Batsman", status: "Vice-Captain" },
+                    { name: "Tim Seifert", team: "New Zealand", role: "Batsman", status: "Normal" },
+                    { name: "Hardik Pandya", team: "India", role: "All-Rounder", status: "Normal" },
+                    { name: "Sam Curran", team: "England", role: "All-Rounder", status: "Normal" },
+                    { name: "Cameron Green", team: "Australia", role: "All-Rounder", status: "Normal" },
+                    { name: "Arshdeep Singh", team: "India", role: "Bowler", status: "Normal" },
+                    { name: "Adil Rashid", team: "England", role: "Bowler", status: "Normal" },
+                    { name: "Mitchell Santner", team: "New Zealand", role: "Bowler", status: "Normal" },
+                    { name: "Matheesha Pathirana", team: "Sri Lanka", role: "Bowler", status: "Normal" }
+                ]
+            },
+            {
+                name: "Team Rajesh",
+                teamWinner: "India",
+                players: [
+                    { name: "Mitchell Marsh", team: "Australia", role: "Batsman", status: "Vice-Captain" },
+                    { name: "Aiden Markram", team: "South Africa", role: "Batsman", status: "Normal" },
+                    { name: "Abhishek Sharma", team: "India", role: "Batsman", status: "Captain" },
+                    { name: "Jos Buttler", team: "England", role: "Batsman", status: "Normal" },
+                    { name: "Marco Jansen", team: "South Africa", role: "All-Rounder", status: "Normal" },
+                    { name: "Sam Curran", team: "England", role: "All-Rounder", status: "Normal" },
+                    { name: "Daryl Mitchell", team: "New Zealand", role: "All-Rounder", status: "Normal" },
+                    { name: "Jasprit Bumrah", team: "India", role: "Bowler", status: "Normal" },
+                    { name: "Mitchell Santner", team: "New Zealand", role: "Bowler", status: "Normal" },
+                    { name: "Varun Chakravarthy", team: "India", role: "Bowler", status: "Normal" },
+                    { name: "Adam Zampa", team: "Australia", role: "Bowler", status: "Normal" }
+                ]
+            },
+            {
+                name: "Team Vinay",
+                teamWinner: "India",
+                players: [
+                    { name: "Phil Salt", team: "England", role: "Batsman", status: "Normal" },
+                    { name: "Dewald Brevis", team: "South Africa", role: "Batsman", status: "Normal" },
+                    { name: "Ishan Kishan", team: "India", role: "Batsman", status: "Vice-Captain" },
+                    { name: "Travis Head", team: "Australia", role: "Batsman", status: "Normal" },
+                    { name: "Cameron Green", team: "Australia", role: "All-Rounder", status: "Captain" },
+                    { name: "Daryl Mitchell", team: "New Zealand", role: "All-Rounder", status: "Normal" },
+                    { name: "Hardik Pandya", team: "India", role: "All-Rounder", status: "Normal" },
+                    { name: "Kuldeep Yadav", team: "India", role: "Bowler", status: "Normal" },
+                    { name: "Mitchell Santner", team: "New Zealand", role: "Bowler", status: "Normal" },
+                    { name: "Keshav Maharaj", team: "South Africa", role: "Bowler", status: "Normal" },
+                    { name: "Jofra Archer", team: "England", role: "Bowler", status: "Normal" }
+                ]
+            }
+        ];
+
+        // Player points - will be updated from API
+        let playerPoints = {};
+
+        // Initialize with sample data (0 points until refreshed)
+        function initializePlayerPoints() {
+            const allPlayers = new Set();
+            teams.forEach(team => {
+                team.players.forEach(player => {
+                    allPlayers.add(player.name);
+                });
+            });
+
+            allPlayers.forEach(player => {
+                if (!playerPoints[player]) {
+                    playerPoints[player] = 0;
+                }
+            });
+        }
+
+        // Calculate team points with captain/VC multipliers
+        function calculateTeamPoints(team) {
+            let total = 0;
+            team.players.forEach(player => {
+                let points = playerPoints[player.name] || 0;
+                if (player.status === "Captain") {
+                    points *= 2;
+                } else if (player.status === "Vice-Captain") {
+                    points *= 1.5;
+                }
+                total += points;
+            });
+            return Math.round(total * 10) / 10;
+        }
+
+        // Render leaderboard
+        function renderLeaderboard() {
+            const teamsWithPoints = teams.map(team => ({
+                ...team,
+                totalPoints: calculateTeamPoints(team)
+            })).sort((a, b) => b.totalPoints - a.totalPoints);
+
+            const tbody = document.getElementById('leaderboardBody');
+            tbody.innerHTML = teamsWithPoints.map((team, index) => `
+                <tr>
+                    <td class="rank rank-${index + 1}">#${index + 1}</td>
+                    <td>${team.name}</td>
+                    <td><strong>${team.totalPoints}</strong></td>
+                    <td>${team.teamWinner}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Render team cards
+        function renderTeams() {
+            const grid = document.getElementById('teamsGrid');
+            grid.innerHTML = teams.map(team => {
+                const totalPoints = calculateTeamPoints(team);
+                return `
+                    <div class="team-card">
+                        <div class="team-header">
+                            <span class="team-name">${team.name}</span>
+                            <span class="team-points">${totalPoints} pts</span>
+                        </div>
+                        <div class="team-players">
+                            ${team.players.map(player => {
+                                let points = playerPoints[player.name] || 0;
+                                let multipliedPoints = points;
+                                let badge = '';
+                                let isMultiplied = false;
+
+                                if (player.status === "Captain") {
+                                    multipliedPoints = points * 2;
+                                    badge = '<span class="badge badge-captain">C</span>';
+                                    isMultiplied = true;
+                                } else if (player.status === "Vice-Captain") {
+                                    multipliedPoints = points * 1.5;
+                                    badge = '<span class="badge badge-vc">VC</span>';
+                                    isMultiplied = true;
+                                }
+
+                                return `
+                                    <div class="player-row">
+                                        <div class="player-info">
+                                            ${badge}
+                                            <span class="player-name">${player.name}</span>
+                                        </div>
+                                        <span class="player-points ${isMultiplied ? 'multiplied' : ''}">${Math.round(multipliedPoints * 10) / 10}</span>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                        <div class="team-winner">
+                            <span class="team-winner-label">Team Winner Pick:</span>
+                            <span>${team.teamWinner}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Refresh points from API
+        async function refreshPoints() {
+            const btn = document.querySelector('.refresh-btn');
+            btn.classList.add('loading');
+            btn.disabled = true;
+
+            try {
+                // First try local server API (bypasses CORS)
+                const response = await fetch('/api/players');
+                const result = await response.json();
+
+                if (result.success && result.data) {
+                    const fetchedPlayers = Object.keys(result.data).length;
+
+                    if (fetchedPlayers > 0) {
+                        Object.assign(playerPoints, result.data);
+                        updateLastUpdated();
+                        if (result.cached) {
+                            console.log('Loaded cached data');
+                        } else {
+                            console.log(`Fetched ${fetchedPlayers} players from cricketxi.com`);
+                        }
+                    } else {
+                        showModal(result.message || 'No player data available on the website yet. The tournament data may not have been published. You can manually enter points or load sample data for testing.');
+                    }
+                } else {
+                    throw new Error(result.error || 'Failed to fetch data');
+                }
+            } catch (error) {
+                console.log('Local server failed, trying direct fetch...');
+
+                // Fallback: Try direct fetch (will fail with CORS but might work in some cases)
+                try {
+                    const directResponse = await fetch('https://cricketxi.com/wp-json/cxi/v1/players?tournament=t20-world-cup-2026');
+                    if (directResponse.ok) {
+                        const data = await directResponse.json();
+                        if (Array.isArray(data)) {
+                            data.forEach(player => {
+                                if (player.name && player.points !== undefined) {
+                                    playerPoints[player.name] = parseFloat(player.points) || 0;
+                                }
+                            });
+                            updateLastUpdated();
+                        }
+                    } else {
+                        throw new Error('Direct fetch failed');
+                    }
+                } catch (directError) {
+                    showModal('Could not fetch data. Make sure the server is running:\n\nRun: npm start\n\nOr load sample data using the browser console:\nloadSamplePoints()');
+                }
+            }
+
+            btn.classList.remove('loading');
+            btn.disabled = false;
+            renderLeaderboard();
+            renderTeams();
+        }
+
+        function updateLastUpdated() {
+            const now = new Date();
+            document.getElementById('lastUpdated').textContent =
+                `Last updated: ${now.toLocaleDateString()} ${now.toLocaleTimeString()}`;
+        }
+
+        function showModal(message) {
+            document.getElementById('errorMessage').textContent = message;
+            document.getElementById('errorModal').classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('errorModal').classList.remove('show');
+        }
+
+        // Manual points update function (for console use)
+        window.updatePlayerPoints = function(pointsObject) {
+            Object.assign(playerPoints, pointsObject);
+            updateLastUpdated();
+            renderLeaderboard();
+            renderTeams();
+            console.log('Points updated successfully!');
+        };
+
+        // Sample points for testing (can be called from console)
+        window.loadSamplePoints = function() {
+            const samplePoints = {
+                "Abhishek Sharma": 156,
+                "Ishan Kishan": 134,
+                "Travis Head": 189,
+                "Phil Salt": 112,
+                "Hardik Pandya": 178,
+                "Marco Jansen": 145,
+                "Sam Curran": 132,
+                "Adam Zampa": 98,
+                "Matheesha Pathirana": 87,
+                "Keshav Maharaj": 76,
+                "Mitchell Santner": 104,
+                "Fakhar Zaman": 89,
+                "Marcus Stoinis": 143,
+                "Jamie Overton": 67,
+                "Matt Henry": 82,
+                "Varun Chakravarthy": 115,
+                "Naseem Shah": 94,
+                "Aiden Markram": 108,
+                "Rashid Khan": 127,
+                "Adil Rashid": 89,
+                "Akeal Hosein": 73,
+                "Suryakumar Yadav": 167,
+                "Jos Buttler": 145,
+                "Daryl Mitchell": 118,
+                "Kagiso Rabada": 132,
+                "Jofra Archer": 98,
+                "Mitchell Marsh": 156,
+                "Tim Seifert": 78,
+                "Cameron Green": 112,
+                "Jacob Duffy": 45,
+                "Dushmantha Chameera": 56,
+                "Saim Ayub": 87,
+                "Romario Shepherd": 65,
+                "Quinton de Kock": 178,
+                "Axar Patel": 95,
+                "Rachin Ravindra": 108,
+                "Jasprit Bumrah": 156,
+                "Lockie Ferguson": 89,
+                "Ryan Rickelton": 67,
+                "Mohammad Nawaz": 54,
+                "Arshdeep Singh": 112,
+                "Ben Dwarshuis": 45,
+                "Anrich Nortje": 78,
+                "Glenn Phillips": 123,
+                "Tilak Varma": 89,
+                "Azmatullah Omarzai": 56,
+                "Lungi Ngidi": 87,
+                "Noor Ahmad": 67,
+                "Abrar Ahmed": 78,
+                "Xavier Bartlett": 56,
+                "Dewald Brevis": 98,
+                "Finn Allen": 112,
+                "Shadab Khan": 76,
+                "Wanindu Hasaranga": 98,
+                "Kuldeep Yadav": 89
+            };
+            updatePlayerPoints(samplePoints);
+        };
+
+        // Initialize and auto-load data
+        initializePlayerPoints();
+        renderLeaderboard();
+        renderTeams();
+
+        // Auto-load cached data on startup
+        async function autoLoadData() {
+            try {
+                const response = await fetch('/api/players');
+                const result = await response.json();
+                if (result.success && result.data && Object.keys(result.data).length > 0) {
+                    Object.assign(playerPoints, result.data);
+                    updateLastUpdated();
+                    renderLeaderboard();
+                    renderTeams();
+                    console.log(`Auto-loaded ${result.count} players`);
+                }
+            } catch (e) {
+                console.log('Auto-load failed, click Refresh to load data');
+            }
+        }
+        autoLoadData();
+
+        console.log('T20 Fantasy Dashboard loaded!');
+        console.log('Click Refresh to get latest points from cricketxi.com');
+    </script>
+</body>
+</html>
