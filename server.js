@@ -1,5 +1,5 @@
 const express = require('express');
-const { execSync } = require('child_process');
+const { exec } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
@@ -12,47 +12,96 @@ app.use(express.static(path.join(__dirname)));
 // Cache for player points
 let cachedPoints = null;
 let lastFetchTime = null;
+let isScraperRunning = false;
 const CACHE_DURATION = 60000; // 1 minute cache
 
-// API endpoint to fetch player points using Python scraper
-app.get('/api/players', async (req, res) => {
+// Load existing data on startup
+const jsonPath = path.join(__dirname, 'player-points.json');
+if (fs.existsSync(jsonPath)) {
     try {
-        // Check cache
-        if (cachedPoints && lastFetchTime && (Date.now() - lastFetchTime < CACHE_DURATION)) {
-            console.log('Returning cached data');
-            return res.json({ success: true, data: cachedPoints, cached: true, count: Object.keys(cachedPoints).length });
-        }
-
-        console.log('Running Python scraper...');
-
-        // Run the Python scraper
-        try {
-            execSync('python3 scraper.py', {
-                cwd: __dirname,
-                timeout: 120000, // 2 minute timeout
-                stdio: 'inherit'
-            });
-        } catch (e) {
-            console.error('Scraper error:', e.message);
-        }
-
-        // Read the JSON file created by the scraper
-        const jsonPath = path.join(__dirname, 'player-points.json');
-        if (fs.existsSync(jsonPath)) {
-            const data = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
-            cachedPoints = data;
-            lastFetchTime = Date.now();
-
-            console.log(`Loaded ${Object.keys(data).length} players from scraper`);
-            res.json({ success: true, data: data, cached: false, count: Object.keys(data).length });
-        } else {
-            res.json({ success: false, message: 'Scraper did not produce output file' });
-        }
-
-    } catch (error) {
-        console.error('Error:', error.message);
-        res.status(500).json({ success: false, error: error.message });
+        cachedPoints = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+        lastFetchTime = Date.now();
+        console.log(`Loaded ${Object.keys(cachedPoints).length} players from existing JSON`);
+    } catch (e) {
+        console.log('No existing player data found');
     }
+}
+
+// Run scraper in background (non-blocking)
+function runScraperInBackground() {
+    if (isScraperRunning) {
+        console.log('Scraper already running, skipping...');
+        return;
+    }
+
+    isScraperRunning = true;
+    console.log('Starting scraper in background...');
+
+    exec('python3 scraper.py', { cwd: __dirname, timeout: 180000 }, (error, stdout, stderr) => {
+        isScraperRunning = false;
+
+        if (error) {
+            console.error('Scraper error:', error.message);
+            return;
+        }
+
+        // Reload the JSON file
+        if (fs.existsSync(jsonPath)) {
+            try {
+                cachedPoints = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+                lastFetchTime = Date.now();
+                console.log(`Scraper finished: ${Object.keys(cachedPoints).length} players loaded`);
+            } catch (e) {
+                console.error('Error reading JSON:', e.message);
+            }
+        }
+    });
+}
+
+// API endpoint to get player points
+app.get('/api/players', (req, res) => {
+    // Always return cached data immediately (non-blocking)
+    if (cachedPoints) {
+        const needsRefresh = !lastFetchTime || (Date.now() - lastFetchTime > CACHE_DURATION);
+
+        // Start background refresh if needed
+        if (needsRefresh && !isScraperRunning) {
+            runScraperInBackground();
+        }
+
+        return res.json({
+            success: true,
+            data: cachedPoints,
+            cached: true,
+            count: Object.keys(cachedPoints).length,
+            refreshing: isScraperRunning
+        });
+    }
+
+    // No cached data - need to wait for scraper
+    if (!isScraperRunning) {
+        runScraperInBackground();
+    }
+
+    // Return empty with message
+    res.json({
+        success: true,
+        data: {},
+        cached: false,
+        count: 0,
+        message: 'Loading player data... Please refresh in 30 seconds.',
+        refreshing: true
+    });
+});
+
+// Force refresh endpoint
+app.get('/api/refresh', (req, res) => {
+    if (isScraperRunning) {
+        return res.json({ success: true, message: 'Refresh already in progress' });
+    }
+
+    runScraperInBackground();
+    res.json({ success: true, message: 'Refresh started' });
 });
 
 // Health check endpoint
