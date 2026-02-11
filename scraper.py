@@ -1,3 +1,4 @@
+```python
 import json
 import requests
 
@@ -7,11 +8,11 @@ OUTPUT_FILE = "player-points.json"
 def main():
     r = requests.get(URL, timeout=30)
     r.raise_for_status()
-    players = r.json()
+    data = r.json()
 
     result = {}
 
-    for p in players:
+    for p in data.get("players", []):
         name = (
             p.get("fullname")
             or p.get("full_name")
@@ -38,3 +39,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+```
