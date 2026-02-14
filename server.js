@@ -90,8 +90,8 @@ app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// Refresh endpoint with password + 30-minute rate limit
-const RATE_LIMIT = 30 * 60 * 1000; // 30 minutes
+// Refresh endpoint with password + 5-minute rate limit
+const RATE_LIMIT = 5 * 60 * 1000; // 5 minutes
 const REFRESH_PASSWORD = process.env.REFRESH_PASSWORD || 't20refresh';
 
 app.get('/api/refresh', (req, res) => {
