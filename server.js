@@ -4,7 +4,16 @@ const fs = require('fs');
 const path = require('path');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 5000;
+const HOST = '0.0.0.0';
+
+// Disable caching in dev so the iframe preview always sees fresh content
+app.use((req, res, next) => {
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+    next();
+});
 
 // Serve static files
 app.use(express.static(path.join(__dirname)));
@@ -129,12 +138,12 @@ app.get('/api/refresh', (req, res) => {
     res.json({ success: true, message: 'Refreshing scores... Page will update in ~1 minute' });
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, HOST, () => {
     console.log(`\n========================================`);
     console.log(`T20 Fantasy Dashboard Server Running!`);
     console.log(`========================================`);
-    console.log(`Dashboard: http://localhost:${PORT}`);
-    console.log(`API: http://localhost:${PORT}/api/players`);
+    console.log(`Dashboard: http://${HOST}:${PORT}`);
+    console.log(`API: http://${HOST}:${PORT}/api/players`);
     console.log(`Auto-refresh: Every 6 hours`);
     console.log(`========================================\n`);
 
