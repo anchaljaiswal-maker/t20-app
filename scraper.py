@@ -2,7 +2,7 @@
 import json
 import requests
 
-URL = "https://cricket-xi-data.s3.us-west-2.amazonaws.com/competitions/230/players.json"
+URL = "https://cricket-xi-data.s3.us-west-2.amazonaws.com/competitions/235/players.json"
 OUTPUT_FILE = "player-points.json"
 
 def main():

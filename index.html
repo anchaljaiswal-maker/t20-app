@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>T20 World Cup 2026 Fantasy Dashboard</title>
+    <title>IPL 2026 Fantasy Dashboard</title>
     <style>
         * {
             margin: 0;
@@ -304,6 +304,19 @@
             cursor: pointer;
         }
 
+
+        .pos-tag {
+            font-size: 0.65rem;
+            padding: 1px 6px;
+            border-radius: 8px;
+            font-weight: bold;
+            margin-left: 4px;
+        }
+        .pos-bench { background: #475569; color: #cbd5e1; }
+        .pos-swap { background: #f97316; color: #fff; }
+        .pos-out { background: #6b7280; color: #fff; }
+        .player-row.dim { opacity: 0.55; }
+
         @media (max-width: 768px) {
             .header h1 {
                 font-size: 1.5rem;
@@ -317,7 +330,7 @@
 </head>
 <body>
     <div class="header">
-        <h1>T20 World Cup 2026 Fantasy Dashboard</h1>
+        <h1>IPL 2026 Fantasy Dashboard</h1>
         <p>Track your fantasy team points in real-time</p>
     </div>
 
@@ -375,361 +388,764 @@
         const teams = [
             {
                 name: "Team Abhishek",
-                teamWinner: "India",
+                teamWinner: "Mumbai Indians",
                 players: [
-                    { name: "Abhishek Sharma", team: "India", role: "Batsman", status: "Normal" },
-                    { name: "Ishan Kishan", team: "India", role: "Batsman", status: "Captain" },
-                    { name: "Travis Head", team: "Australia", role: "Batsman", status: "Vice-Captain" },
-                    { name: "Phil Salt", team: "England", role: "Batsman", status: "Normal" },
-                    { name: "Hardik Pandya", team: "India", role: "All-Rounder", status: "Normal" },
-                    { name: "Marco Jansen", team: "South Africa", role: "All-Rounder", status: "Normal" },
-                    { name: "Sam Curran", team: "England", role: "All-Rounder", status: "Normal" },
-                    { name: "Adam Zampa", team: "Australia", role: "Bowler", status: "Normal" },
-                    { name: "Matheesha Pathirana", team: "Sri Lanka", role: "Bowler", status: "Normal" },
-                    { name: "Keshav Maharaj", team: "South Africa", role: "Bowler", status: "Normal" },
-                    { name: "Mitchell Santner", team: "New Zealand", role: "Bowler", status: "Normal" }
+                    {"name": "Sanju Samson", "position": "Playing-XI", "status": "Normal", "team": "Chennai Super Kings", "role": "Batsman"},
+                    {"name": "Rohit Sharma", "position": "Playing-XI", "status": "Captain", "team": "Mumbai Indians", "role": "Batsman"},
+                    {"name": "Abhishek Sharma", "position": "Playing-XI", "status": "Normal", "team": "Sunrisers Hyderabad", "role": "Batsman"},
+                    {"name": "Virat Kohli", "position": "Playing-XI", "status": "Vice-Captain", "team": "Royal Challengers Bangalore", "role": "Batsman"},
+                    {"name": "Axar Patel", "position": "Playing-XI", "status": "Normal", "team": "Delhi Capitals", "role": "All-Rounder"},
+                    {"name": "Hardik Pandya", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "All-Rounder"},
+                    {"name": "Sunil Narine", "position": "Playing-XI", "status": "Normal", "team": "Kolkata Knight Riders", "role": "All-Rounder"},
+                    {"name": "Marco Jansen", "position": "Playing-XI", "status": "Normal", "team": "Punjab Kings", "role": "Bowler"},
+                    {"name": "Jasprit Bumrah", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "Bowler"},
+                    {"name": "Varun Chakravarthy", "position": "Playing-XI", "status": "Normal", "team": "Kolkata Knight Riders", "role": "Bowler"},
+                    {"name": "Mohammed Shami", "position": "Playing-XI", "status": "Normal", "team": "Lucknow Super Giants", "role": "Bowler"},
+                    {"name": "Yashasvi Jaiswal", "position": "Bench", "status": "Normal", "team": "Rajasthan Royals", "role": "Emer-Batsman"},
+                    {"name": "Krunal Pandya", "position": "Bench", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "Emer-All-Rounder"},
+                    {"name": "Arshdeep Singh", "position": "Bench", "status": "Normal", "team": "Punjab Kings", "role": "Emer-Bowler"},
                 ]
             },
             {
                 name: "Team Akshit",
-                teamWinner: "India",
+                teamWinner: "Chennai Super Kings",
                 players: [
-                    { name: "Travis Head", team: "Australia", role: "Batsman", status: "Normal" },
-                    { name: "Abhishek Sharma", team: "India", role: "Batsman", status: "Captain" },
-                    { name: "Fakhar Zaman", team: "Pakistan", role: "Batsman", status: "Normal" },
-                    { name: "Phil Salt", team: "England", role: "Batsman", status: "Normal" },
-                    { name: "Hardik Pandya", team: "India", role: "All-Rounder", status: "Normal" },
-                    { name: "Marcus Stoinis", team: "Australia", role: "All-Rounder", status: "Vice-Captain" },
-                    { name: "Jamie Overton", team: "England", role: "All-Rounder", status: "Normal" },
-                    { name: "Matt Henry", team: "New Zealand", role: "Bowler", status: "Normal" },
-                    { name: "Varun Chakravarthy", team: "India", role: "Bowler", status: "Normal" },
-                    { name: "Naseem Shah", team: "Pakistan", role: "Bowler", status: "Normal" },
-                    { name: "Keshav Maharaj", team: "South Africa", role: "Bowler", status: "Normal" }
+                    {"name": "Sanju Samson", "position": "Playing-XI", "status": "Captain", "team": "Chennai Super Kings", "role": "Batsman"},
+                    {"name": "Virat Kohli", "position": "Playing-XI", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "Batsman"},
+                    {"name": "Ishan Kishan", "position": "Playing-XI", "status": "Normal", "team": "Sunrisers Hyderabad", "role": "Batsman"},
+                    {"name": "Suryakumar Yadav", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "Batsman"},
+                    {"name": "Hardik Pandya", "position": "Playing-XI", "status": "Vice-Captain", "team": "Mumbai Indians", "role": "All-Rounder"},
+                    {"name": "Sunil Narine", "position": "Playing-XI", "status": "Normal", "team": "Kolkata Knight Riders", "role": "All-Rounder"},
+                    {"name": "Romario Shepherd", "position": "Playing-XI", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "All-Rounder"},
+                    {"name": "Matt Henry", "position": "Ruled-Out", "status": "Normal", "team": "Chennai Super Kings", "role": "Bowler"},
+                    {"name": "Jasprit Bumrah", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "Bowler"},
+                    {"name": "Rashid Khan", "position": "Playing-XI", "status": "Normal", "team": "Gujarat Titans", "role": "Bowler"},
+                    {"name": "Mohammed Shami", "position": "Playing-XI", "status": "Normal", "team": "Lucknow Super Giants", "role": "Bowler"},
+                    {"name": "Jos Buttler", "position": "Bench", "status": "Normal", "team": "Gujarat Titans", "role": "Emer-Batsman"},
+                    {"name": "Cameron Green", "position": "Bench", "status": "Normal", "team": "Kolkata Knight Riders", "role": "Emer-All-Rounder"},
+                    {"name": "Kagiso Rabada", "position": "Swap-Player", "status": "Normal", "team": "Gujarat Titans", "role": "Emer-Bowler"},
                 ]
             },
             {
-                name: "Team Anchal",
-                teamWinner: "India",
+                name: "Team Akshay",
+                teamWinner: "Mumbai Indians",
                 players: [
-                    { name: "Travis Head", team: "Australia", role: "Batsman", status: "Normal" },
-                    { name: "Abhishek Sharma", team: "India", role: "Batsman", status: "Vice-Captain" },
-                    { name: "Aiden Markram", team: "South Africa", role: "Batsman", status: "Normal" },
-                    { name: "Phil Salt", team: "England", role: "Batsman", status: "Normal" },
-                    { name: "Hardik Pandya", team: "India", role: "All-Rounder", status: "Captain" },
-                    { name: "Sam Curran", team: "England", role: "All-Rounder", status: "Normal" },
-                    { name: "Marcus Stoinis", team: "Australia", role: "All-Rounder", status: "Normal" },
-                    { name: "Rashid Khan", team: "Afghanistan", role: "Bowler", status: "Normal" },
-                    { name: "Mitchell Santner", team: "New Zealand", role: "Bowler", status: "Normal" },
-                    { name: "Adil Rashid", team: "England", role: "Bowler", status: "Normal" },
-                    { name: "Akeal Hosein", team: "West Indies", role: "Bowler", status: "Normal" }
-                ]
-            },
-            {
-                name: "Team Ankit",
-                teamWinner: "India",
-                players: [
-                    { name: "Abhishek Sharma", team: "India", role: "Batsman", status: "Normal" },
-                    { name: "Suryakumar Yadav", team: "India", role: "Batsman", status: "Normal" },
-                    { name: "Travis Head", team: "Australia", role: "Batsman", status: "Normal" },
-                    { name: "Jos Buttler", team: "England", role: "Batsman", status: "Normal" },
-                    { name: "Hardik Pandya", team: "India", role: "All-Rounder", status: "Captain" },
-                    { name: "Daryl Mitchell", team: "New Zealand", role: "All-Rounder", status: "Vice-Captain" },
-                    { name: "Marco Jansen", team: "South Africa", role: "All-Rounder", status: "Normal" },
-                    { name: "Adam Zampa", team: "Australia", role: "Bowler", status: "Normal" },
-                    { name: "Mitchell Santner", team: "New Zealand", role: "Bowler", status: "Normal" },
-                    { name: "Kagiso Rabada", team: "South Africa", role: "Bowler", status: "Normal" },
-                    { name: "Jofra Archer", team: "England", role: "Bowler", status: "Normal" }
+                    {"name": "Sanju Samson", "position": "Playing-XI", "status": "Normal", "team": "Chennai Super Kings", "role": "Batsman"},
+                    {"name": "Virat Kohli", "position": "Playing-XI", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "Batsman"},
+                    {"name": "Abhishek Sharma", "position": "Playing-XI", "status": "Vice-Captain", "team": "Sunrisers Hyderabad", "role": "Batsman"},
+                    {"name": "Shubman Gill", "position": "Playing-XI", "status": "Normal", "team": "Gujarat Titans", "role": "Batsman"},
+                    {"name": "Hardik Pandya", "position": "Playing-XI", "status": "Captain", "team": "Mumbai Indians", "role": "All-Rounder"},
+                    {"name": "Axar Patel", "position": "Playing-XI", "status": "Normal", "team": "Delhi Capitals", "role": "All-Rounder"},
+                    {"name": "Krunal Pandya", "position": "Playing-XI", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "All-Rounder"},
+                    {"name": "Varun Chakravarthy", "position": "Playing-XI", "status": "Normal", "team": "Kolkata Knight Riders", "role": "Bowler"},
+                    {"name": "Rashid Khan", "position": "Playing-XI", "status": "Normal", "team": "Gujarat Titans", "role": "Bowler"},
+                    {"name": "Jasprit Bumrah", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "Bowler"},
+                    {"name": "Harshal Patel", "position": "Playing-XI", "status": "Normal", "team": "Sunrisers Hyderabad", "role": "Bowler"},
+                    {"name": "Aiden Markram", "position": "Bench", "status": "Normal", "team": "Lucknow Super Giants", "role": "Emer-Batsman"},
+                    {"name": "Sunil Narine", "position": "Bench", "status": "Normal", "team": "Kolkata Knight Riders", "role": "Emer-All-Rounder"},
+                    {"name": "Kuldeep Yadav", "position": "Bench", "status": "Normal", "team": "Delhi Capitals", "role": "Emer-Bowler"},
                 ]
             },
             {
                 name: "Team Ashok",
-                teamWinner: "India",
+                teamWinner: "Rajasthan Royals",
                 players: [
-                    { name: "Abhishek Sharma", team: "India", role: "Batsman", status: "Vice-Captain" },
-                    { name: "Mitchell Marsh", team: "Australia", role: "Batsman", status: "Captain" },
-                    { name: "Tim Seifert", team: "New Zealand", role: "Batsman", status: "Normal" },
-                    { name: "Jos Buttler", team: "England", role: "Batsman", status: "Normal" },
-                    { name: "Hardik Pandya", team: "India", role: "All-Rounder", status: "Normal" },
-                    { name: "Marco Jansen", team: "South Africa", role: "All-Rounder", status: "Normal" },
-                    { name: "Cameron Green", team: "Australia", role: "All-Rounder", status: "Normal" },
-                    { name: "Akeal Hosein", team: "West Indies", role: "Bowler", status: "Normal" },
-                    { name: "Varun Chakravarthy", team: "India", role: "Bowler", status: "Normal" },
-                    { name: "Jacob Duffy", team: "New Zealand", role: "Bowler", status: "Normal" },
-                    { name: "Dushmantha Chameera", team: "Sri Lanka", role: "Bowler", status: "Normal" }
+                    {"name": "Aiden Markram", "position": "Ruled-Out", "status": "Normal", "team": "Lucknow Super Giants", "role": "Batsman"},
+                    {"name": "Vaibhav Suryavanshi", "position": "Playing-XI", "status": "Vice-Captain", "team": "Rajasthan Royals", "role": "Batsman"},
+                    {"name": "Mitchell Marsh", "position": "Playing-XI", "status": "Captain", "team": "Lucknow Super Giants", "role": "Batsman"},
+                    {"name": "Ishan Kishan", "position": "Playing-XI", "status": "Normal", "team": "Sunrisers Hyderabad", "role": "Batsman"},
+                    {"name": "Ravindra Jadeja", "position": "Playing-XI", "status": "Normal", "team": "Rajasthan Royals", "role": "All-Rounder"},
+                    {"name": "Marcus Stoinis", "position": "Ruled-Out", "status": "Normal", "team": "Punjab Kings", "role": "All-Rounder"},
+                    {"name": "Hardik Pandya", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "All-Rounder"},
+                    {"name": "Jasprit Bumrah", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "Bowler"},
+                    {"name": "Marco Jansen", "position": "Playing-XI", "status": "Normal", "team": "Punjab Kings", "role": "Bowler"},
+                    {"name": "Varun Chakravarthy", "position": "Playing-XI", "status": "Normal", "team": "Kolkata Knight Riders", "role": "Bowler"},
+                    {"name": "Jofra Archer", "position": "Playing-XI", "status": "Normal", "team": "Rajasthan Royals", "role": "Bowler"},
+                    {"name": "Virat Kohli", "position": "Swap-Player", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "Emer-Batsman"},
+                    {"name": "Axar Patel", "position": "Swap-Player", "status": "Normal", "team": "Delhi Capitals", "role": "Emer-All-Rounder"},
+                    {"name": "Josh Hazlewood", "position": "Bench", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "Emer-Bowler"},
+                ]
+            },
+            {
+                name: "Team Bunty",
+                teamWinner: "Sunrisers Hyderabad",
+                players: [
+                    {"name": "Suryakumar Yadav", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "Batsman"},
+                    {"name": "Virat Kohli", "position": "Playing-XI", "status": "Vice-Captain", "team": "Royal Challengers Bangalore", "role": "Batsman"},
+                    {"name": "Abhishek Sharma", "position": "Playing-XI", "status": "Captain", "team": "Sunrisers Hyderabad", "role": "Batsman"},
+                    {"name": "Jos Buttler", "position": "Playing-XI", "status": "Normal", "team": "Gujarat Titans", "role": "Batsman"},
+                    {"name": "Sunil Narine", "position": "Playing-XI", "status": "Normal", "team": "Kolkata Knight Riders", "role": "All-Rounder"},
+                    {"name": "Axar Patel", "position": "Playing-XI", "status": "Normal", "team": "Delhi Capitals", "role": "All-Rounder"},
+                    {"name": "Hardik Pandya", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "All-Rounder"},
+                    {"name": "Marco Jansen", "position": "Playing-XI", "status": "Normal", "team": "Punjab Kings", "role": "Bowler"},
+                    {"name": "Josh Hazlewood", "position": "Playing-XI", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "Bowler"},
+                    {"name": "Jasprit Bumrah", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "Bowler"},
+                    {"name": "Rashid Khan", "position": "Playing-XI", "status": "Normal", "team": "Gujarat Titans", "role": "Bowler"},
+                    {"name": "Nicholas Pooran", "position": "Bench", "status": "Normal", "team": "Lucknow Super Giants", "role": "Emer-Batsman"},
+                    {"name": "Ravindra Jadeja", "position": "Bench", "status": "Normal", "team": "Rajasthan Royals", "role": "Emer-All-Rounder"},
+                    {"name": "Kuldeep Yadav", "position": "Bench", "status": "Normal", "team": "Delhi Capitals", "role": "Emer-Bowler"},
                 ]
             },
             {
                 name: "Team Burhan",
-                teamWinner: "India",
+                teamWinner: "Chennai Super Kings",
                 players: [
-                    { name: "Travis Head", team: "Australia", role: "Batsman", status: "Normal" },
-                    { name: "Ishan Kishan", team: "India", role: "Batsman", status: "Vice-Captain" },
-                    { name: "Saim Ayub", team: "Pakistan", role: "Batsman", status: "Normal" },
-                    { name: "Jos Buttler", team: "England", role: "Batsman", status: "Normal" },
-                    { name: "Hardik Pandya", team: "India", role: "All-Rounder", status: "Captain" },
-                    { name: "Marco Jansen", team: "South Africa", role: "All-Rounder", status: "Normal" },
-                    { name: "Romario Shepherd", team: "West Indies", role: "All-Rounder", status: "Normal" },
-                    { name: "Mitchell Santner", team: "New Zealand", role: "Bowler", status: "Normal" },
-                    { name: "Adil Rashid", team: "England", role: "Bowler", status: "Normal" },
-                    { name: "Kagiso Rabada", team: "South Africa", role: "Bowler", status: "Normal" },
-                    { name: "Akeal Hosein", team: "West Indies", role: "Bowler", status: "Normal" }
+                    {"name": "Mitchell Marsh", "position": "Playing-XI", "status": "Normal", "team": "Lucknow Super Giants", "role": "Batsman"},
+                    {"name": "Shimron Hetmyer", "position": "Playing-XI", "status": "Captain", "team": "Rajasthan Royals", "role": "Batsman"},
+                    {"name": "Travis Head", "position": "Playing-XI", "status": "Normal", "team": "Sunrisers Hyderabad", "role": "Batsman"},
+                    {"name": "Shubman Gill", "position": "Playing-XI", "status": "Normal", "team": "Gujarat Titans", "role": "Batsman"},
+                    {"name": "Hardik Pandya", "position": "Playing-XI", "status": "Vice-Captain", "team": "Mumbai Indians", "role": "All-Rounder"},
+                    {"name": "Cameron Green", "position": "Playing-XI", "status": "Normal", "team": "Kolkata Knight Riders", "role": "All-Rounder"},
+                    {"name": "Axar Patel", "position": "Playing-XI", "status": "Normal", "team": "Delhi Capitals", "role": "All-Rounder"},
+                    {"name": "Marco Jansen", "position": "Playing-XI", "status": "Normal", "team": "Punjab Kings", "role": "Bowler"},
+                    {"name": "Noor Ahmad", "position": "Playing-XI", "status": "Normal", "team": "Chennai Super Kings", "role": "Bowler"},
+                    {"name": "Josh Hazlewood", "position": "Playing-XI", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "Bowler"},
+                    {"name": "Mohammed Shami", "position": "Playing-XI", "status": "Normal", "team": "Lucknow Super Giants", "role": "Bowler"},
+                    {"name": "Finn Allen", "position": "Bench", "status": "Normal", "team": "Kolkata Knight Riders", "role": "Emer-Batsman"},
+                    {"name": "Jason Holder", "position": "Bench", "status": "Normal", "team": "Gujarat Titans", "role": "Emer-All-Rounder"},
+                    {"name": "Auqib Nabi", "position": "Bench", "status": "Normal", "team": "Delhi Capitals", "role": "Emer-Bowler"},
                 ]
             },
             {
-                name: "Team Deepak",
-                teamWinner: "India",
+                name: "Team Burhan - 2",
+                teamWinner: "Mumbai Indians",
                 players: [
-                    { name: "Abhishek Sharma", team: "India", role: "Batsman", status: "Captain" },
-                    { name: "Ishan Kishan", team: "India", role: "Batsman", status: "Normal" },
-                    { name: "Travis Head", team: "Australia", role: "Batsman", status: "Normal" },
-                    { name: "Jos Buttler", team: "England", role: "Batsman", status: "Vice-Captain" },
-                    { name: "Hardik Pandya", team: "India", role: "All-Rounder", status: "Normal" },
-                    { name: "Marco Jansen", team: "South Africa", role: "All-Rounder", status: "Normal" },
-                    { name: "Sam Curran", team: "England", role: "All-Rounder", status: "Normal" },
-                    { name: "Adam Zampa", team: "Australia", role: "Bowler", status: "Normal" },
-                    { name: "Mitchell Santner", team: "New Zealand", role: "Bowler", status: "Normal" },
-                    { name: "Matt Henry", team: "New Zealand", role: "Bowler", status: "Normal" },
-                    { name: "Rashid Khan", team: "Afghanistan", role: "Bowler", status: "Normal" }
+                    {"name": "Shreyas Iyer", "position": "Playing-XI", "status": "Vice-Captain", "team": "Punjab Kings", "role": "Batsman"},
+                    {"name": "Ruturaj Gaikwad", "position": "Playing-XI", "status": "Normal", "team": "Chennai Super Kings", "role": "Batsman"},
+                    {"name": "Ishan Kishan", "position": "Playing-XI", "status": "Captain", "team": "Sunrisers Hyderabad", "role": "Batsman"},
+                    {"name": "Aiden Markram", "position": "Playing-XI", "status": "Normal", "team": "Lucknow Super Giants", "role": "Batsman"},
+                    {"name": "Hardik Pandya", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "All-Rounder"},
+                    {"name": "Cooper Connolly", "position": "Playing-XI", "status": "Normal", "team": "Punjab Kings", "role": "All-Rounder"},
+                    {"name": "Cameron Green", "position": "Playing-XI", "status": "Normal", "team": "Kolkata Knight Riders", "role": "All-Rounder"},
+                    {"name": "Prashant Veer", "position": "Playing-XI", "status": "Normal", "team": "Chennai Super Kings", "role": "Bowler"},
+                    {"name": "Mohammed Siraj", "position": "Playing-XI", "status": "Normal", "team": "Gujarat Titans", "role": "Bowler"},
+                    {"name": "Trent Boult", "position": "Ruled-Out", "status": "Normal", "team": "Mumbai Indians", "role": "Bowler"},
+                    {"name": "Josh Hazlewood", "position": "Playing-XI", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "Bowler"},
+                    {"name": "Phil Salt", "position": "Bench", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "Emer-Batsman"},
+                    {"name": "Krunal Pandya", "position": "Bench", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "Emer-All-Rounder"},
+                    {"name": "Jasprit Bumrah", "position": "Swap-Player", "status": "Normal", "team": "Mumbai Indians", "role": "Emer-Bowler"},
+                ]
+            },
+            {
+                name: "Team Chirag",
+                teamWinner: "Mumbai Indians",
+                players: [
+                    {"name": "Rohit Sharma", "position": "Ruled-Out", "status": "Captain", "team": "Mumbai Indians", "role": "Batsman"},
+                    {"name": "Yashasvi Jaiswal", "position": "Playing-XI", "status": "Normal", "team": "Rajasthan Royals", "role": "Batsman"},
+                    {"name": "Sanju Samson", "position": "Playing-XI", "status": "Normal", "team": "Chennai Super Kings", "role": "Batsman"},
+                    {"name": "KL Rahul", "position": "Playing-XI", "status": "Normal", "team": "Delhi Capitals", "role": "Batsman"},
+                    {"name": "Hardik Pandya", "position": "Playing-XI", "status": "Vice-Captain", "team": "Mumbai Indians", "role": "All-Rounder"},
+                    {"name": "Krunal Pandya", "position": "Playing-XI", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "All-Rounder"},
+                    {"name": "Romario Shepherd", "position": "Playing-XI", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "All-Rounder"},
+                    {"name": "Marco Jansen", "position": "Playing-XI", "status": "Normal", "team": "Punjab Kings", "role": "Bowler"},
+                    {"name": "Arshdeep Singh", "position": "Playing-XI", "status": "Normal", "team": "Punjab Kings", "role": "Bowler"},
+                    {"name": "Jasprit Bumrah", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "Bowler"},
+                    {"name": "Mohammed Shami", "position": "Playing-XI", "status": "Normal", "team": "Lucknow Super Giants", "role": "Bowler"},
+                    {"name": "Virat Kohli", "position": "Swap-Player", "status": "Captain", "team": "Royal Challengers Bangalore", "role": "Emer-Batsman"},
+                    {"name": "Axar Patel", "position": "Bench", "status": "Normal", "team": "Delhi Capitals", "role": "Emer-All-Rounder"},
+                    {"name": "Varun Chakravarthy", "position": "Bench", "status": "Normal", "team": "Kolkata Knight Riders", "role": "Emer-Bowler"},
+                ]
+            },
+            {
+                name: "Team Dharmesh",
+                teamWinner: "Royal Challengers Bangalore",
+                players: [
+                    {"name": "Vaibhav Suryavanshi", "position": "Playing-XI", "status": "Normal", "team": "Rajasthan Royals", "role": "Batsman"},
+                    {"name": "Sanju Samson", "position": "Playing-XI", "status": "Normal", "team": "Chennai Super Kings", "role": "Batsman"},
+                    {"name": "Ishan Kishan", "position": "Playing-XI", "status": "Captain", "team": "Sunrisers Hyderabad", "role": "Batsman"},
+                    {"name": "Virat Kohli", "position": "Playing-XI", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "Batsman"},
+                    {"name": "Hardik Pandya", "position": "Playing-XI", "status": "Vice-Captain", "team": "Mumbai Indians", "role": "All-Rounder"},
+                    {"name": "Sunil Narine", "position": "Playing-XI", "status": "Normal", "team": "Kolkata Knight Riders", "role": "All-Rounder"},
+                    {"name": "Axar Patel", "position": "Playing-XI", "status": "Normal", "team": "Delhi Capitals", "role": "All-Rounder"},
+                    {"name": "Jasprit Bumrah", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "Bowler"},
+                    {"name": "Arshdeep Singh", "position": "Playing-XI", "status": "Normal", "team": "Punjab Kings", "role": "Bowler"},
+                    {"name": "Noor Ahmad", "position": "Playing-XI", "status": "Normal", "team": "Chennai Super Kings", "role": "Bowler"},
+                    {"name": "Rashid Khan", "position": "Playing-XI", "status": "Normal", "team": "Gujarat Titans", "role": "Bowler"},
+                    {"name": "Rohit Sharma", "position": "Bench", "status": "Normal", "team": "Mumbai Indians", "role": "Emer-Batsman"},
+                    {"name": "Jack Edwards", "position": "Bench", "status": "Normal", "team": "Sunrisers Hyderabad", "role": "Emer-All-Rounder"},
+                    {"name": "Varun Chakravarthy", "position": "Bench", "status": "Normal", "team": "Kolkata Knight Riders", "role": "Emer-Bowler"},
                 ]
             },
             {
                 name: "Team Dhiraj",
-                teamWinner: "Australia",
+                teamWinner: "Mumbai Indians",
                 players: [
-                    { name: "Quinton de Kock", team: "South Africa", role: "Batsman", status: "Normal" },
-                    { name: "Mitchell Marsh", team: "Australia", role: "Batsman", status: "Captain" },
-                    { name: "Travis Head", team: "Australia", role: "Batsman", status: "Vice-Captain" },
-                    { name: "Jos Buttler", team: "England", role: "Batsman", status: "Normal" },
-                    { name: "Hardik Pandya", team: "India", role: "All-Rounder", status: "Normal" },
-                    { name: "Axar Patel", team: "India", role: "All-Rounder", status: "Normal" },
-                    { name: "Rachin Ravindra", team: "New Zealand", role: "All-Rounder", status: "Normal" },
-                    { name: "Jasprit Bumrah", team: "India", role: "Bowler", status: "Normal" },
-                    { name: "Kagiso Rabada", team: "South Africa", role: "Bowler", status: "Normal" },
-                    { name: "Jofra Archer", team: "England", role: "Bowler", status: "Normal" },
-                    { name: "Lockie Ferguson", team: "New Zealand", role: "Bowler", status: "Normal" }
+                    {"name": "Heinrich Klaasen", "position": "Playing-XI", "status": "Captain", "team": "Sunrisers Hyderabad", "role": "Batsman"},
+                    {"name": "Travis Head", "position": "Playing-XI", "status": "Vice-Captain", "team": "Sunrisers Hyderabad", "role": "Batsman"},
+                    {"name": "Nicholas Pooran", "position": "Ruled-Out", "status": "Normal", "team": "Lucknow Super Giants", "role": "Batsman"},
+                    {"name": "Riyan Parag", "position": "Playing-XI", "status": "Normal", "team": "Rajasthan Royals", "role": "Batsman"},
+                    {"name": "Axar Patel", "position": "Playing-XI", "status": "Normal", "team": "Delhi Capitals", "role": "All-Rounder"},
+                    {"name": "Krunal Pandya", "position": "Playing-XI", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "All-Rounder"},
+                    {"name": "Ravindra Jadeja", "position": "Playing-XI", "status": "Normal", "team": "Rajasthan Royals", "role": "All-Rounder"},
+                    {"name": "Marco Jansen", "position": "Playing-XI", "status": "Normal", "team": "Punjab Kings", "role": "Bowler"},
+                    {"name": "Mohammed Shami", "position": "Playing-XI", "status": "Normal", "team": "Lucknow Super Giants", "role": "Bowler"},
+                    {"name": "Varun Chakravarthy", "position": "Playing-XI", "status": "Normal", "team": "Kolkata Knight Riders", "role": "Bowler"},
+                    {"name": "Kuldeep Yadav", "position": "Playing-XI", "status": "Normal", "team": "Delhi Capitals", "role": "Bowler"},
+                    {"name": "Shubman Gill", "position": "Swap-Player", "status": "Normal", "team": "Gujarat Titans", "role": "Emer-Batsman"},
+                    {"name": "Sunil Narine", "position": "Bench", "status": "Normal", "team": "Kolkata Knight Riders", "role": "Emer-All-Rounder"},
+                    {"name": "Jasprit Bumrah", "position": "Bench", "status": "Normal", "team": "Mumbai Indians", "role": "Emer-Bowler"},
                 ]
             },
             {
                 name: "Team Hiren",
-                teamWinner: "South Africa",
+                teamWinner: "Mumbai Indians",
                 players: [
-                    { name: "Ishan Kishan", team: "India", role: "Batsman", status: "Normal" },
-                    { name: "Quinton de Kock", team: "South Africa", role: "Batsman", status: "Captain" },
-                    { name: "Jos Buttler", team: "England", role: "Batsman", status: "Vice-Captain" },
-                    { name: "Ryan Rickelton", team: "South Africa", role: "Batsman", status: "Normal" },
-                    { name: "Marcus Stoinis", team: "Australia", role: "All-Rounder", status: "Normal" },
-                    { name: "Sam Curran", team: "England", role: "All-Rounder", status: "Normal" },
-                    { name: "Mohammad Nawaz", team: "Pakistan", role: "All-Rounder", status: "Normal" },
-                    { name: "Arshdeep Singh", team: "India", role: "Bowler", status: "Normal" },
-                    { name: "Ben Dwarshuis", team: "Australia", role: "Bowler", status: "Normal" },
-                    { name: "Anrich Nortje", team: "South Africa", role: "Bowler", status: "Normal" },
-                    { name: "Lockie Ferguson", team: "New Zealand", role: "Bowler", status: "Normal" }
+                    {"name": "Sai Sudharsan", "position": "Playing-XI", "status": "Captain", "team": "Gujarat Titans", "role": "Batsman"},
+                    {"name": "Mitchell Marsh", "position": "Playing-XI", "status": "Normal", "team": "Lucknow Super Giants", "role": "Batsman"},
+                    {"name": "Ishan Kishan", "position": "Playing-XI", "status": "Vice-Captain", "team": "Sunrisers Hyderabad", "role": "Batsman"},
+                    {"name": "Shreyas Iyer", "position": "Playing-XI", "status": "Normal", "team": "Punjab Kings", "role": "Batsman"},
+                    {"name": "Hardik Pandya", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "All-Rounder"},
+                    {"name": "Marcus Stoinis", "position": "Ruled-Out", "status": "Normal", "team": "Punjab Kings", "role": "All-Rounder"},
+                    {"name": "Axar Patel", "position": "Playing-XI", "status": "Normal", "team": "Delhi Capitals", "role": "All-Rounder"},
+                    {"name": "Trent Boult", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "Bowler"},
+                    {"name": "Varun Chakravarthy", "position": "Playing-XI", "status": "Normal", "team": "Kolkata Knight Riders", "role": "Bowler"},
+                    {"name": "Arshdeep Singh", "position": "Playing-XI", "status": "Normal", "team": "Punjab Kings", "role": "Bowler"},
+                    {"name": "Tushar Deshpande", "position": "Playing-XI", "status": "Normal", "team": "Rajasthan Royals", "role": "Bowler"},
+                    {"name": "Virat Kohli", "position": "Bench", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "Emer-Batsman"},
+                    {"name": "Sunil Narine", "position": "Swap-Player", "status": "Normal", "team": "Kolkata Knight Riders", "role": "Emer-All-Rounder"},
+                    {"name": "Mohammed Shami", "position": "Bench", "status": "Normal", "team": "Lucknow Super Giants", "role": "Emer-Bowler"},
+                ]
+            },
+            {
+                name: "Team Hiren (RDX)",
+                teamWinner: "Sunrisers Hyderabad",
+                players: [
+                    {"name": "Virat Kohli", "position": "Playing-XI", "status": "Vice-Captain", "team": "Royal Challengers Bangalore", "role": "Batsman"},
+                    {"name": "Abhishek Sharma", "position": "Playing-XI", "status": "Captain", "team": "Sunrisers Hyderabad", "role": "Batsman"},
+                    {"name": "Jos Buttler", "position": "Playing-XI", "status": "Normal", "team": "Gujarat Titans", "role": "Batsman"},
+                    {"name": "Vaibhav Suryavanshi", "position": "Playing-XI", "status": "Normal", "team": "Rajasthan Royals", "role": "Batsman"},
+                    {"name": "Hardik Pandya", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "All-Rounder"},
+                    {"name": "Marcus Stoinis", "position": "Ruled-Out", "status": "Normal", "team": "Punjab Kings", "role": "All-Rounder"},
+                    {"name": "Axar Patel", "position": "Playing-XI", "status": "Normal", "team": "Delhi Capitals", "role": "All-Rounder"},
+                    {"name": "Trent Boult", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "Bowler"},
+                    {"name": "Vaibhav Arora", "position": "Playing-XI", "status": "Normal", "team": "Kolkata Knight Riders", "role": "Bowler"},
+                    {"name": "Rashid Khan", "position": "Playing-XI", "status": "Normal", "team": "Gujarat Titans", "role": "Bowler"},
+                    {"name": "Tushar Deshpande", "position": "Playing-XI", "status": "Normal", "team": "Rajasthan Royals", "role": "Bowler"},
+                    {"name": "Rohit Sharma", "position": "Bench", "status": "Normal", "team": "Mumbai Indians", "role": "Emer-Batsman"},
+                    {"name": "Sunil Narine", "position": "Swap-Player", "status": "Normal", "team": "Kolkata Knight Riders", "role": "Emer-All-Rounder"},
+                    {"name": "Mohammed Shami", "position": "Bench", "status": "Normal", "team": "Lucknow Super Giants", "role": "Emer-Bowler"},
                 ]
             },
             {
                 name: "Team Hitesh",
-                teamWinner: "India",
+                teamWinner: "Mumbai Indians",
                 players: [
-                    { name: "Suryakumar Yadav", team: "India", role: "Batsman", status: "Captain" },
-                    { name: "Glenn Phillips", team: "New Zealand", role: "Batsman", status: "Normal" },
-                    { name: "Jos Buttler", team: "England", role: "Batsman", status: "Normal" },
-                    { name: "Travis Head", team: "Australia", role: "Batsman", status: "Normal" },
-                    { name: "Sam Curran", team: "England", role: "All-Rounder", status: "Normal" },
-                    { name: "Axar Patel", team: "India", role: "All-Rounder", status: "Normal" },
-                    { name: "Marco Jansen", team: "South Africa", role: "All-Rounder", status: "Vice-Captain" },
-                    { name: "Lockie Ferguson", team: "New Zealand", role: "Bowler", status: "Normal" },
-                    { name: "Matheesha Pathirana", team: "Sri Lanka", role: "Bowler", status: "Normal" },
-                    { name: "Arshdeep Singh", team: "India", role: "Bowler", status: "Normal" },
-                    { name: "Adam Zampa", team: "Australia", role: "Bowler", status: "Normal" }
+                    {"name": "Rohit Sharma", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "Batsman"},
+                    {"name": "Vaibhav Suryavanshi", "position": "Playing-XI", "status": "Normal", "team": "Rajasthan Royals", "role": "Batsman"},
+                    {"name": "Nicholas Pooran", "position": "Ruled-Out", "status": "Normal", "team": "Lucknow Super Giants", "role": "Batsman"},
+                    {"name": "Sanju Samson", "position": "Playing-XI", "status": "Captain", "team": "Chennai Super Kings", "role": "Batsman"},
+                    {"name": "Krunal Pandya", "position": "Playing-XI", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "All-Rounder"},
+                    {"name": "Sunil Narine", "position": "Playing-XI", "status": "Normal", "team": "Kolkata Knight Riders", "role": "All-Rounder"},
+                    {"name": "Hardik Pandya", "position": "Playing-XI", "status": "Vice-Captain", "team": "Mumbai Indians", "role": "All-Rounder"},
+                    {"name": "Trent Boult", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "Bowler"},
+                    {"name": "Marco Jansen", "position": "Playing-XI", "status": "Normal", "team": "Punjab Kings", "role": "Bowler"},
+                    {"name": "Josh Hazlewood", "position": "Playing-XI", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "Bowler"},
+                    {"name": "Yuzvendra Chahal", "position": "Playing-XI", "status": "Normal", "team": "Punjab Kings", "role": "Bowler"},
+                    {"name": "Abhishek Sharma", "position": "Swap-Player", "status": "Normal", "team": "Sunrisers Hyderabad", "role": "Emer-Batsman"},
+                    {"name": "Romario Shepherd", "position": "Bench", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "Emer-All-Rounder"},
+                    {"name": "Mitchell Starc", "position": "Bench", "status": "Normal", "team": "Delhi Capitals", "role": "Emer-Bowler"},
+                ]
+            },
+            {
+                name: "Team Jayesh",
+                teamWinner: "Mumbai Indians",
+                players: [
+                    {"name": "Shubman Gill", "position": "Playing-XI", "status": "Normal", "team": "Gujarat Titans", "role": "Batsman"},
+                    {"name": "Phil Salt", "position": "Playing-XI", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "Batsman"},
+                    {"name": "Travis Head", "position": "Playing-XI", "status": "Normal", "team": "Sunrisers Hyderabad", "role": "Batsman"},
+                    {"name": "Yashasvi Jaiswal", "position": "Playing-XI", "status": "Normal", "team": "Rajasthan Royals", "role": "Batsman"},
+                    {"name": "Marcus Stoinis", "position": "Playing-XI", "status": "Normal", "team": "Punjab Kings", "role": "All-Rounder"},
+                    {"name": "Hardik Pandya", "position": "Playing-XI", "status": "Captain", "team": "Mumbai Indians", "role": "All-Rounder"},
+                    {"name": "Axar Patel", "position": "Playing-XI", "status": "Vice-Captain", "team": "Delhi Capitals", "role": "All-Rounder"},
+                    {"name": "Jasprit Bumrah", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "Bowler"},
+                    {"name": "Varun Chakravarthy", "position": "Playing-XI", "status": "Normal", "team": "Kolkata Knight Riders", "role": "Bowler"},
+                    {"name": "Noor Ahmad", "position": "Playing-XI", "status": "Normal", "team": "Chennai Super Kings", "role": "Bowler"},
+                    {"name": "Rashid Khan", "position": "Playing-XI", "status": "Normal", "team": "Gujarat Titans", "role": "Bowler"},
+                    {"name": "Tilak Varma", "position": "Bench", "status": "Normal", "team": "Mumbai Indians", "role": "Emer-Batsman"},
+                    {"name": "Ravindra Jadeja", "position": "Bench", "status": "Normal", "team": "Rajasthan Royals", "role": "Emer-All-Rounder"},
+                    {"name": "Mohammed Shami", "position": "Bench", "status": "Normal", "team": "Lucknow Super Giants", "role": "Emer-Bowler"},
                 ]
             },
             {
                 name: "Team Kamlesh",
-                teamWinner: "India",
+                teamWinner: "Mumbai Indians",
                 players: [
-                    { name: "Abhishek Sharma", team: "India", role: "Batsman", status: "Normal" },
-                    { name: "Ishan Kishan", team: "India", role: "Batsman", status: "Captain" },
-                    { name: "Quinton de Kock", team: "South Africa", role: "Batsman", status: "Normal" },
-                    { name: "Travis Head", team: "Australia", role: "Batsman", status: "Vice-Captain" },
-                    { name: "Rachin Ravindra", team: "New Zealand", role: "All-Rounder", status: "Normal" },
-                    { name: "Hardik Pandya", team: "India", role: "All-Rounder", status: "Normal" },
-                    { name: "Marcus Stoinis", team: "Australia", role: "All-Rounder", status: "Normal" },
-                    { name: "Jofra Archer", team: "England", role: "Bowler", status: "Normal" },
-                    { name: "Mitchell Santner", team: "New Zealand", role: "Bowler", status: "Normal" },
-                    { name: "Lungi Ngidi", team: "South Africa", role: "Bowler", status: "Normal" },
-                    { name: "Matheesha Pathirana", team: "Sri Lanka", role: "Bowler", status: "Normal" }
+                    {"name": "Abhishek Sharma", "position": "Playing-XI", "status": "Captain", "team": "Sunrisers Hyderabad", "role": "Batsman"},
+                    {"name": "Vaibhav Suryavanshi", "position": "Playing-XI", "status": "Vice-Captain", "team": "Rajasthan Royals", "role": "Batsman"},
+                    {"name": "Ayush Mhatre", "position": "Ruled-Out", "status": "Normal", "team": "Chennai Super Kings", "role": "Batsman"},
+                    {"name": "Quinton de Kock", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "Batsman"},
+                    {"name": "Hardik Pandya", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "All-Rounder"},
+                    {"name": "Rachin Ravindra", "position": "Playing-XI", "status": "Normal", "team": "Kolkata Knight Riders", "role": "All-Rounder"},
+                    {"name": "Marcus Stoinis", "position": "Playing-XI", "status": "Normal", "team": "Punjab Kings", "role": "All-Rounder"},
+                    {"name": "Kuldeep Yadav", "position": "Playing-XI", "status": "Normal", "team": "Delhi Capitals", "role": "Bowler"},
+                    {"name": "Jasprit Bumrah", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "Bowler"},
+                    {"name": "Ravi Bishnoi", "position": "Playing-XI", "status": "Normal", "team": "Rajasthan Royals", "role": "Bowler"},
+                    {"name": "Varun Chakravarthy", "position": "Playing-XI", "status": "Normal", "team": "Kolkata Knight Riders", "role": "Bowler"},
+                    {"name": "Priyansh Arya", "position": "Swap-Player", "status": "Normal", "team": "Punjab Kings", "role": "Emer-Batsman"},
+                    {"name": "Romario Shepherd", "position": "Bench", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "Emer-All-Rounder"},
+                    {"name": "Pat Cummins", "position": "Bench", "status": "Normal", "team": "Sunrisers Hyderabad", "role": "Emer-Bowler"},
+                ]
+            },
+            {
+                name: "Team Mandar XI",
+                teamWinner: "Mumbai Indians",
+                players: [
+                    {"name": "KL Rahul", "position": "Playing-XI", "status": "Normal", "team": "Delhi Capitals", "role": "Batsman"},
+                    {"name": "Shreyas Iyer", "position": "Playing-XI", "status": "Normal", "team": "Punjab Kings", "role": "Batsman"},
+                    {"name": "Shubman Gill", "position": "Playing-XI", "status": "Normal", "team": "Gujarat Titans", "role": "Batsman"},
+                    {"name": "Suryakumar Yadav", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "Batsman"},
+                    {"name": "Axar Patel", "position": "Playing-XI", "status": "Normal", "team": "Delhi Capitals", "role": "All-Rounder"},
+                    {"name": "Hardik Pandya", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "All-Rounder"},
+                    {"name": "Krunal Pandya", "position": "Playing-XI", "status": "Vice-Captain", "team": "Royal Challengers Bangalore", "role": "All-Rounder"},
+                    {"name": "Kuldeep Yadav", "position": "Playing-XI", "status": "Normal", "team": "Delhi Capitals", "role": "Bowler"},
+                    {"name": "Mohammed Siraj", "position": "Playing-XI", "status": "Captain", "team": "Gujarat Titans", "role": "Bowler"},
+                    {"name": "Marco Jansen", "position": "Playing-XI", "status": "Normal", "team": "Punjab Kings", "role": "Bowler"},
+                    {"name": "Arshdeep Singh", "position": "Playing-XI", "status": "Normal", "team": "Punjab Kings", "role": "Bowler"},
+                    {"name": "Angkrish Raghuvanshi", "position": "Bench", "status": "Normal", "team": "Kolkata Knight Riders", "role": "Emer-Batsman"},
+                    {"name": "Ravindra Jadeja", "position": "Bench", "status": "Normal", "team": "Rajasthan Royals", "role": "Emer-All-Rounder"},
+                    {"name": "Jofra Archer", "position": "Bench", "status": "Normal", "team": "Rajasthan Royals", "role": "Emer-Bowler"},
+                ]
+            },
+            {
+                name: "Team Mayur",
+                teamWinner: "Lucknow Super Giants",
+                players: [
+                    {"name": "Aiden Markram", "position": "Playing-XI", "status": "Normal", "team": "Lucknow Super Giants", "role": "Batsman"},
+                    {"name": "Nicholas Pooran", "position": "Ruled-Out", "status": "Captain", "team": "Lucknow Super Giants", "role": "Batsman"},
+                    {"name": "Mitchell Marsh", "position": "Playing-XI", "status": "Normal", "team": "Lucknow Super Giants", "role": "Batsman"},
+                    {"name": "Will Jacks", "position": "Playing-XI", "status": "Vice-Captain", "team": "Mumbai Indians", "role": "Batsman"},
+                    {"name": "Ravindra Jadeja", "position": "Playing-XI", "status": "Normal", "team": "Rajasthan Royals", "role": "All-Rounder"},
+                    {"name": "Marcus Stoinis", "position": "Playing-XI", "status": "Normal", "team": "Punjab Kings", "role": "All-Rounder"},
+                    {"name": "Rachin Ravindra", "position": "Ruled-Out", "status": "Normal", "team": "Kolkata Knight Riders", "role": "All-Rounder"},
+                    {"name": "Marco Jansen", "position": "Playing-XI", "status": "Normal", "team": "Punjab Kings", "role": "Bowler"},
+                    {"name": "Harshal Patel", "position": "Ruled-Out", "status": "Normal", "team": "Sunrisers Hyderabad", "role": "Bowler"},
+                    {"name": "Trent Boult", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "Bowler"},
+                    {"name": "Varun Chakravarthy", "position": "Playing-XI", "status": "Normal", "team": "Kolkata Knight Riders", "role": "Bowler"},
+                    {"name": "Virat Kohli", "position": "Swap-Player", "status": "Captain", "team": "Royal Challengers Bangalore", "role": "Emer-Batsman"},
+                    {"name": "Axar Patel", "position": "Swap-Player", "status": "Normal", "team": "Delhi Capitals", "role": "Emer-All-Rounder"},
+                    {"name": "Jasprit Bumrah", "position": "Swap-Player", "status": "Normal", "team": "Mumbai Indians", "role": "Emer-Bowler"},
+                ]
+            },
+            {
+                name: "Team Mayur -2",
+                teamWinner: "Punjab Kings",
+                players: [
+                    {"name": "Sanju Samson", "position": "Playing-XI", "status": "Normal", "team": "Chennai Super Kings", "role": "Batsman"},
+                    {"name": "Shubman Gill", "position": "Playing-XI", "status": "Normal", "team": "Gujarat Titans", "role": "Batsman"},
+                    {"name": "Virat Kohli", "position": "Playing-XI", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "Batsman"},
+                    {"name": "Liam Livingstone", "position": "Ruled-Out", "status": "Normal", "team": "Sunrisers Hyderabad", "role": "Batsman"},
+                    {"name": "Hardik Pandya", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "All-Rounder"},
+                    {"name": "Ravindra Jadeja", "position": "Playing-XI", "status": "Captain", "team": "Rajasthan Royals", "role": "All-Rounder"},
+                    {"name": "Krunal Pandya", "position": "Playing-XI", "status": "Vice-Captain", "team": "Royal Challengers Bangalore", "role": "All-Rounder"},
+                    {"name": "Rashid Khan", "position": "Playing-XI", "status": "Normal", "team": "Gujarat Titans", "role": "Bowler"},
+                    {"name": "Arshdeep Singh", "position": "Playing-XI", "status": "Normal", "team": "Punjab Kings", "role": "Bowler"},
+                    {"name": "Deepak Chahar", "position": "Ruled-Out", "status": "Normal", "team": "Mumbai Indians", "role": "Bowler"},
+                    {"name": "Jofra Archer", "position": "Playing-XI", "status": "Normal", "team": "Rajasthan Royals", "role": "Bowler"},
+                    {"name": "Nicholas Pooran", "position": "Swap-Player", "status": "Normal", "team": "Lucknow Super Giants", "role": "Emer-Batsman"},
+                    {"name": "Washington Sundar", "position": "Bench", "status": "Normal", "team": "Gujarat Titans", "role": "Emer-All-Rounder"},
+                    {"name": "Jasprit Bumrah", "position": "Swap-Player", "status": "Normal", "team": "Mumbai Indians", "role": "Emer-Bowler"},
                 ]
             },
             {
                 name: "Team Meet",
-                teamWinner: "India",
+                teamWinner: "Delhi Capitals",
                 players: [
-                    { name: "Mitchell Marsh", team: "Australia", role: "Batsman", status: "Normal" },
-                    { name: "Tim Seifert", team: "New Zealand", role: "Batsman", status: "Normal" },
-                    { name: "Ishan Kishan", team: "India", role: "Batsman", status: "Captain" },
-                    { name: "Tilak Varma", team: "India", role: "Batsman", status: "Normal" },
-                    { name: "Daryl Mitchell", team: "New Zealand", role: "All-Rounder", status: "Normal" },
-                    { name: "Marco Jansen", team: "South Africa", role: "All-Rounder", status: "Normal" },
-                    { name: "Azmatullah Omarzai", team: "Afghanistan", role: "All-Rounder", status: "Normal" },
-                    { name: "Rashid Khan", team: "Afghanistan", role: "Bowler", status: "Normal" },
-                    { name: "Kagiso Rabada", team: "South Africa", role: "Bowler", status: "Normal" },
-                    { name: "Adam Zampa", team: "Australia", role: "Bowler", status: "Normal" },
-                    { name: "Arshdeep Singh", team: "India", role: "Bowler", status: "Vice-Captain" }
+                    {"name": "Sanju Samson", "position": "Playing-XI", "status": "Normal", "team": "Chennai Super Kings", "role": "Batsman"},
+                    {"name": "Ishan Kishan", "position": "Playing-XI", "status": "Captain", "team": "Sunrisers Hyderabad", "role": "Batsman"},
+                    {"name": "Rohit Sharma", "position": "Ruled-Out", "status": "Normal", "team": "Mumbai Indians", "role": "Batsman"},
+                    {"name": "Sai Sudharsan", "position": "Playing-XI", "status": "Normal", "team": "Gujarat Titans", "role": "Batsman"},
+                    {"name": "Cameron Green", "position": "Playing-XI", "status": "Normal", "team": "Kolkata Knight Riders", "role": "All-Rounder"},
+                    {"name": "Hardik Pandya", "position": "Ruled-Out", "status": "Vice-Captain", "team": "Mumbai Indians", "role": "All-Rounder"},
+                    {"name": "Axar Patel", "position": "Playing-XI", "status": "Normal", "team": "Delhi Capitals", "role": "All-Rounder"},
+                    {"name": "Varun Chakravarthy", "position": "Playing-XI", "status": "Normal", "team": "Kolkata Knight Riders", "role": "Bowler"},
+                    {"name": "Prasidh Krishna", "position": "Playing-XI", "status": "Normal", "team": "Gujarat Titans", "role": "Bowler"},
+                    {"name": "Digvesh Rathi", "position": "Playing-XI", "status": "Normal", "team": "Lucknow Super Giants", "role": "Bowler"},
+                    {"name": "Lungi Ngidi", "position": "Ruled-Out", "status": "Normal", "team": "Delhi Capitals", "role": "Bowler"},
+                    {"name": "Abhishek Sharma", "position": "Swap-Player", "status": "Normal", "team": "Sunrisers Hyderabad", "role": "Emer-Batsman"},
+                    {"name": "Sunil Narine", "position": "Swap-Player", "status": "Vice-Captain", "team": "Kolkata Knight Riders", "role": "Emer-All-Rounder"},
+                    {"name": "Josh Hazlewood", "position": "Swap-Player", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "Emer-Bowler"},
+                ]
+            },
+            {
+                name: "Team Meet - 2",
+                teamWinner: "Royal Challengers Bangalore",
+                players: [
+                    {"name": "Abhishek Sharma", "position": "Playing-XI", "status": "Captain", "team": "Sunrisers Hyderabad", "role": "Batsman"},
+                    {"name": "Virat Kohli", "position": "Playing-XI", "status": "Vice-Captain", "team": "Royal Challengers Bangalore", "role": "Batsman"},
+                    {"name": "Vaibhav Suryavanshi", "position": "Playing-XI", "status": "Normal", "team": "Rajasthan Royals", "role": "Batsman"},
+                    {"name": "Shreyas Iyer", "position": "Playing-XI", "status": "Normal", "team": "Punjab Kings", "role": "Batsman"},
+                    {"name": "Sunil Narine", "position": "Playing-XI", "status": "Normal", "team": "Kolkata Knight Riders", "role": "All-Rounder"},
+                    {"name": "Hardik Pandya", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "All-Rounder"},
+                    {"name": "Ravindra Jadeja", "position": "Playing-XI", "status": "Normal", "team": "Rajasthan Royals", "role": "All-Rounder"},
+                    {"name": "Mohammed Shami", "position": "Playing-XI", "status": "Normal", "team": "Lucknow Super Giants", "role": "Bowler"},
+                    {"name": "Jasprit Bumrah", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "Bowler"},
+                    {"name": "Harshal Patel", "position": "Playing-XI", "status": "Normal", "team": "Sunrisers Hyderabad", "role": "Bowler"},
+                    {"name": "Arshdeep Singh", "position": "Playing-XI", "status": "Normal", "team": "Punjab Kings", "role": "Bowler"},
+                    {"name": "Yashasvi Jaiswal", "position": "Bench", "status": "Normal", "team": "Rajasthan Royals", "role": "Emer-Batsman"},
+                    {"name": "Cameron Green", "position": "Bench", "status": "Normal", "team": "Kolkata Knight Riders", "role": "Emer-All-Rounder"},
+                    {"name": "Trent Boult", "position": "Bench", "status": "Normal", "team": "Mumbai Indians", "role": "Emer-Bowler"},
                 ]
             },
             {
                 name: "Team Mitul",
-                teamWinner: "India",
+                teamWinner: "Punjab Kings",
                 players: [
-                    { name: "Abhishek Sharma", team: "India", role: "Batsman", status: "Vice-Captain" },
-                    { name: "Suryakumar Yadav", team: "India", role: "Batsman", status: "Normal" },
-                    { name: "Glenn Phillips", team: "New Zealand", role: "Batsman", status: "Normal" },
-                    { name: "Quinton de Kock", team: "South Africa", role: "Batsman", status: "Normal" },
-                    { name: "Hardik Pandya", team: "India", role: "All-Rounder", status: "Captain" },
-                    { name: "Marco Jansen", team: "South Africa", role: "All-Rounder", status: "Normal" },
-                    { name: "Sam Curran", team: "England", role: "All-Rounder", status: "Normal" },
-                    { name: "Noor Ahmad", team: "Afghanistan", role: "Bowler", status: "Normal" },
-                    { name: "Akeal Hosein", team: "West Indies", role: "Bowler", status: "Normal" },
-                    { name: "Abrar Ahmed", team: "Pakistan", role: "Bowler", status: "Normal" },
-                    { name: "Xavier Bartlett", team: "Australia", role: "Bowler", status: "Normal" }
+                    {"name": "Ishan Kishan", "position": "Playing-XI", "status": "Captain", "team": "Sunrisers Hyderabad", "role": "Batsman"},
+                    {"name": "Shimron Hetmyer", "position": "Playing-XI", "status": "Normal", "team": "Rajasthan Royals", "role": "Batsman"},
+                    {"name": "Sanju Samson", "position": "Playing-XI", "status": "Vice-Captain", "team": "Chennai Super Kings", "role": "Batsman"},
+                    {"name": "Shreyas Iyer", "position": "Playing-XI", "status": "Normal", "team": "Punjab Kings", "role": "Batsman"},
+                    {"name": "Hardik Pandya", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "All-Rounder"},
+                    {"name": "Sunil Narine", "position": "Playing-XI", "status": "Normal", "team": "Kolkata Knight Riders", "role": "All-Rounder"},
+                    {"name": "Romario Shepherd", "position": "Ruled-Out", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "All-Rounder"},
+                    {"name": "Lungi Ngidi", "position": "Playing-XI", "status": "Normal", "team": "Delhi Capitals", "role": "Bowler"},
+                    {"name": "Rashid Khan", "position": "Playing-XI", "status": "Normal", "team": "Gujarat Titans", "role": "Bowler"},
+                    {"name": "Marco Jansen", "position": "Playing-XI", "status": "Normal", "team": "Punjab Kings", "role": "Bowler"},
+                    {"name": "Jasprit Bumrah", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "Bowler"},
+                    {"name": "Nicholas Pooran", "position": "Bench", "status": "Normal", "team": "Lucknow Super Giants", "role": "Emer-Batsman"},
+                    {"name": "Axar Patel", "position": "Swap-Player", "status": "Normal", "team": "Delhi Capitals", "role": "Emer-All-Rounder"},
+                    {"name": "Kagiso Rabada", "position": "Bench", "status": "Normal", "team": "Gujarat Titans", "role": "Emer-Bowler"},
                 ]
             },
             {
                 name: "Team Naabil",
-                teamWinner: "India",
+                teamWinner: "Mumbai Indians",
                 players: [
-                    { name: "Travis Head", team: "Australia", role: "Batsman", status: "Normal" },
-                    { name: "Abhishek Sharma", team: "India", role: "Batsman", status: "Vice-Captain" },
-                    { name: "Dewald Brevis", team: "South Africa", role: "Batsman", status: "Normal" },
-                    { name: "Finn Allen", team: "New Zealand", role: "Batsman", status: "Normal" },
-                    { name: "Marco Jansen", team: "South Africa", role: "All-Rounder", status: "Normal" },
-                    { name: "Hardik Pandya", team: "India", role: "All-Rounder", status: "Captain" },
-                    { name: "Cameron Green", team: "Australia", role: "All-Rounder", status: "Normal" },
-                    { name: "Abrar Ahmed", team: "Pakistan", role: "Bowler", status: "Normal" },
-                    { name: "Mitchell Santner", team: "New Zealand", role: "Bowler", status: "Normal" },
-                    { name: "Naseem Shah", team: "Pakistan", role: "Bowler", status: "Normal" },
-                    { name: "Varun Chakravarthy", team: "India", role: "Bowler", status: "Normal" }
+                    {"name": "Virat Kohli", "position": "Playing-XI", "status": "Vice-Captain", "team": "Royal Challengers Bangalore", "role": "Batsman"},
+                    {"name": "Abhishek Sharma", "position": "Playing-XI", "status": "Normal", "team": "Sunrisers Hyderabad", "role": "Batsman"},
+                    {"name": "Finn Allen", "position": "Ruled-Out", "status": "Normal", "team": "Kolkata Knight Riders", "role": "Batsman"},
+                    {"name": "Sanju Samson", "position": "Playing-XI", "status": "Normal", "team": "Chennai Super Kings", "role": "Batsman"},
+                    {"name": "Hardik Pandya", "position": "Playing-XI", "status": "Captain", "team": "Mumbai Indians", "role": "All-Rounder"},
+                    {"name": "Cameron Green", "position": "Playing-XI", "status": "Normal", "team": "Kolkata Knight Riders", "role": "All-Rounder"},
+                    {"name": "Axar Patel", "position": "Playing-XI", "status": "Normal", "team": "Delhi Capitals", "role": "All-Rounder"},
+                    {"name": "Marco Jansen", "position": "Playing-XI", "status": "Normal", "team": "Punjab Kings", "role": "Bowler"},
+                    {"name": "Arshdeep Singh", "position": "Playing-XI", "status": "Normal", "team": "Punjab Kings", "role": "Bowler"},
+                    {"name": "Noor Ahmad", "position": "Playing-XI", "status": "Normal", "team": "Chennai Super Kings", "role": "Bowler"},
+                    {"name": "Josh Hazlewood", "position": "Playing-XI", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "Bowler"},
+                    {"name": "Ishan Kishan", "position": "Swap-Player", "status": "Normal", "team": "Sunrisers Hyderabad", "role": "Emer-Batsman"},
+                    {"name": "Romario Shepherd", "position": "Bench", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "Emer-All-Rounder"},
+                    {"name": "Jasprit Bumrah", "position": "Bench", "status": "Normal", "team": "Mumbai Indians", "role": "Emer-Bowler"},
                 ]
             },
             {
                 name: "Team Paresh",
-                teamWinner: "India",
+                teamWinner: "Mumbai Indians",
                 players: [
-                    { name: "Abhishek Sharma", team: "India", role: "Batsman", status: "Vice-Captain" },
-                    { name: "Ishan Kishan", team: "India", role: "Batsman", status: "Captain" },
-                    { name: "Quinton de Kock", team: "South Africa", role: "Batsman", status: "Normal" },
-                    { name: "Phil Salt", team: "England", role: "Batsman", status: "Normal" },
-                    { name: "Hardik Pandya", team: "India", role: "All-Rounder", status: "Normal" },
-                    { name: "Marco Jansen", team: "South Africa", role: "All-Rounder", status: "Normal" },
-                    { name: "Shadab Khan", team: "Pakistan", role: "All-Rounder", status: "Normal" },
-                    { name: "Matheesha Pathirana", team: "Sri Lanka", role: "Bowler", status: "Normal" },
-                    { name: "Ben Dwarshuis", team: "Australia", role: "Bowler", status: "Normal" },
-                    { name: "Lockie Ferguson", team: "New Zealand", role: "Bowler", status: "Normal" },
-                    { name: "Naseem Shah", team: "Pakistan", role: "Bowler", status: "Normal" }
+                    {"name": "Sanju Samson", "position": "Playing-XI", "status": "Vice-Captain", "team": "Chennai Super Kings", "role": "Batsman"},
+                    {"name": "Yashasvi Jaiswal", "position": "Playing-XI", "status": "Normal", "team": "Rajasthan Royals", "role": "Batsman"},
+                    {"name": "Rohit Sharma", "position": "Playing-XI", "status": "Captain", "team": "Mumbai Indians", "role": "Batsman"},
+                    {"name": "Virat Kohli", "position": "Playing-XI", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "Batsman"},
+                    {"name": "Axar Patel", "position": "Playing-XI", "status": "Normal", "team": "Delhi Capitals", "role": "All-Rounder"},
+                    {"name": "Ravindra Jadeja", "position": "Playing-XI", "status": "Normal", "team": "Rajasthan Royals", "role": "All-Rounder"},
+                    {"name": "Hardik Pandya", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "All-Rounder"},
+                    {"name": "Jasprit Bumrah", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "Bowler"},
+                    {"name": "Mohammed Shami", "position": "Playing-XI", "status": "Normal", "team": "Lucknow Super Giants", "role": "Bowler"},
+                    {"name": "Bhuvneshwar Kumar", "position": "Playing-XI", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "Bowler"},
+                    {"name": "Mohammed Siraj", "position": "Playing-XI", "status": "Normal", "team": "Gujarat Titans", "role": "Bowler"},
+                    {"name": "Aiden Markram", "position": "Bench", "status": "Normal", "team": "Lucknow Super Giants", "role": "Emer-Batsman"},
+                    {"name": "Rachin Ravindra", "position": "Bench", "status": "Normal", "team": "Kolkata Knight Riders", "role": "Emer-All-Rounder"},
+                    {"name": "Kuldeep Yadav", "position": "Bench", "status": "Normal", "team": "Delhi Capitals", "role": "Emer-Bowler"},
                 ]
             },
             {
                 name: "Team Pinesh",
-                teamWinner: "India",
+                teamWinner: "Mumbai Indians",
                 players: [
-                    { name: "Ishan Kishan", team: "India", role: "Batsman", status: "Captain" },
-                    { name: "Jos Buttler", team: "England", role: "Batsman", status: "Normal" },
-                    { name: "Tim Seifert", team: "New Zealand", role: "Batsman", status: "Normal" },
-                    { name: "Aiden Markram", team: "South Africa", role: "Batsman", status: "Normal" },
-                    { name: "Hardik Pandya", team: "India", role: "All-Rounder", status: "Normal" },
-                    { name: "Cameron Green", team: "Australia", role: "All-Rounder", status: "Normal" },
-                    { name: "Marco Jansen", team: "South Africa", role: "All-Rounder", status: "Normal" },
-                    { name: "Varun Chakravarthy", team: "India", role: "Bowler", status: "Vice-Captain" },
-                    { name: "Matt Henry", team: "New Zealand", role: "Bowler", status: "Normal" },
-                    { name: "Jofra Archer", team: "England", role: "Bowler", status: "Normal" },
-                    { name: "Adam Zampa", team: "Australia", role: "Bowler", status: "Normal" }
+                    {"name": "Sanju Samson", "position": "Playing-XI", "status": "Captain", "team": "Chennai Super Kings", "role": "Batsman"},
+                    {"name": "Virat Kohli", "position": "Playing-XI", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "Batsman"},
+                    {"name": "Shreyas Iyer", "position": "Playing-XI", "status": "Vice-Captain", "team": "Punjab Kings", "role": "Batsman"},
+                    {"name": "Abhishek Sharma", "position": "Playing-XI", "status": "Normal", "team": "Sunrisers Hyderabad", "role": "Batsman"},
+                    {"name": "Hardik Pandya", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "All-Rounder"},
+                    {"name": "Cameron Green", "position": "Playing-XI", "status": "Normal", "team": "Kolkata Knight Riders", "role": "All-Rounder"},
+                    {"name": "Ravindra Jadeja", "position": "Playing-XI", "status": "Normal", "team": "Rajasthan Royals", "role": "All-Rounder"},
+                    {"name": "Varun Chakravarthy", "position": "Playing-XI", "status": "Normal", "team": "Kolkata Knight Riders", "role": "Bowler"},
+                    {"name": "Jasprit Bumrah", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "Bowler"},
+                    {"name": "Marco Jansen", "position": "Playing-XI", "status": "Normal", "team": "Punjab Kings", "role": "Bowler"},
+                    {"name": "Mohammed Shami", "position": "Playing-XI", "status": "Normal", "team": "Lucknow Super Giants", "role": "Bowler"},
+                    {"name": "KL Rahul", "position": "Bench", "status": "Normal", "team": "Delhi Capitals", "role": "Emer-Batsman"},
+                    {"name": "Axar Patel", "position": "Bench", "status": "Normal", "team": "Delhi Capitals", "role": "Emer-All-Rounder"},
+                    {"name": "Arshdeep Singh", "position": "Bench", "status": "Normal", "team": "Punjab Kings", "role": "Emer-Bowler"},
                 ]
             },
             {
                 name: "Team Piyush",
-                teamWinner: "India",
+                teamWinner: "Sunrisers Hyderabad",
                 players: [
-                    { name: "Abhishek Sharma", team: "India", role: "Batsman", status: "Captain" },
-                    { name: "Ishan Kishan", team: "India", role: "Batsman", status: "Vice-Captain" },
-                    { name: "Travis Head", team: "Australia", role: "Batsman", status: "Normal" },
-                    { name: "Ryan Rickelton", team: "South Africa", role: "Batsman", status: "Normal" },
-                    { name: "Marco Jansen", team: "South Africa", role: "All-Rounder", status: "Normal" },
-                    { name: "Cameron Green", team: "Australia", role: "All-Rounder", status: "Normal" },
-                    { name: "Hardik Pandya", team: "India", role: "All-Rounder", status: "Normal" },
-                    { name: "Mitchell Santner", team: "New Zealand", role: "Bowler", status: "Normal" },
-                    { name: "Adil Rashid", team: "England", role: "Bowler", status: "Normal" },
-                    { name: "Jofra Archer", team: "England", role: "Bowler", status: "Normal" },
-                    { name: "Wanindu Hasaranga", team: "Sri Lanka", role: "Bowler", status: "Normal" }
+                    {"name": "Sanju Samson", "position": "Playing-XI", "status": "Vice-Captain", "team": "Chennai Super Kings", "role": "Batsman"},
+                    {"name": "Aiden Markram", "position": "Ruled-Out", "status": "Captain", "team": "Lucknow Super Giants", "role": "Batsman"},
+                    {"name": "Vaibhav Suryavanshi", "position": "Playing-XI", "status": "Normal", "team": "Rajasthan Royals", "role": "Batsman"},
+                    {"name": "Abhishek Sharma", "position": "Playing-XI", "status": "Normal", "team": "Sunrisers Hyderabad", "role": "Batsman"},
+                    {"name": "Hardik Pandya", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "All-Rounder"},
+                    {"name": "Sunil Narine", "position": "Playing-XI", "status": "Normal", "team": "Kolkata Knight Riders", "role": "All-Rounder"},
+                    {"name": "Krunal Pandya", "position": "Playing-XI", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "All-Rounder"},
+                    {"name": "Jasprit Bumrah", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "Bowler"},
+                    {"name": "Mohammed Shami", "position": "Playing-XI", "status": "Normal", "team": "Lucknow Super Giants", "role": "Bowler"},
+                    {"name": "Varun Chakravarthy", "position": "Playing-XI", "status": "Normal", "team": "Kolkata Knight Riders", "role": "Bowler"},
+                    {"name": "Marco Jansen", "position": "Playing-XI", "status": "Normal", "team": "Punjab Kings", "role": "Bowler"},
+                    {"name": "Ishan Kishan", "position": "Swap-Player", "status": "Captain", "team": "Sunrisers Hyderabad", "role": "Emer-Batsman"},
+                    {"name": "Azmatullah Omarzai", "position": "Bench", "status": "Normal", "team": "Punjab Kings", "role": "Emer-All-Rounder"},
+                    {"name": "Mayank Yadav", "position": "Bench", "status": "Normal", "team": "Lucknow Super Giants", "role": "Emer-Bowler"},
                 ]
             },
             {
                 name: "Team Preet",
-                teamWinner: "India",
+                teamWinner: "Mumbai Indians",
                 players: [
-                    { name: "Abhishek Sharma", team: "India", role: "Batsman", status: "Captain" },
-                    { name: "Aiden Markram", team: "South Africa", role: "Batsman", status: "Normal" },
-                    { name: "Mitchell Marsh", team: "Australia", role: "Batsman", status: "Vice-Captain" },
-                    { name: "Tim Seifert", team: "New Zealand", role: "Batsman", status: "Normal" },
-                    { name: "Hardik Pandya", team: "India", role: "All-Rounder", status: "Normal" },
-                    { name: "Sam Curran", team: "England", role: "All-Rounder", status: "Normal" },
-                    { name: "Cameron Green", team: "Australia", role: "All-Rounder", status: "Normal" },
-                    { name: "Arshdeep Singh", team: "India", role: "Bowler", status: "Normal" },
-                    { name: "Adil Rashid", team: "England", role: "Bowler", status: "Normal" },
-                    { name: "Mitchell Santner", team: "New Zealand", role: "Bowler", status: "Normal" },
-                    { name: "Matheesha Pathirana", team: "Sri Lanka", role: "Bowler", status: "Normal" }
+                    {"name": "Nicholas Pooran", "position": "Ruled-Out", "status": "Normal", "team": "Lucknow Super Giants", "role": "Batsman"},
+                    {"name": "Travis Head", "position": "Playing-XI", "status": "Normal", "team": "Sunrisers Hyderabad", "role": "Batsman"},
+                    {"name": "Yashasvi Jaiswal", "position": "Playing-XI", "status": "Captain", "team": "Rajasthan Royals", "role": "Batsman"},
+                    {"name": "Phil Salt", "position": "Playing-XI", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "Batsman"},
+                    {"name": "Hardik Pandya", "position": "Playing-XI", "status": "Vice-Captain", "team": "Mumbai Indians", "role": "All-Rounder"},
+                    {"name": "Sunil Narine", "position": "Playing-XI", "status": "Normal", "team": "Kolkata Knight Riders", "role": "All-Rounder"},
+                    {"name": "Axar Patel", "position": "Playing-XI", "status": "Normal", "team": "Delhi Capitals", "role": "All-Rounder"},
+                    {"name": "Rashid Khan", "position": "Playing-XI", "status": "Normal", "team": "Gujarat Titans", "role": "Bowler"},
+                    {"name": "Arshdeep Singh", "position": "Playing-XI", "status": "Normal", "team": "Punjab Kings", "role": "Bowler"},
+                    {"name": "Kuldeep Yadav", "position": "Playing-XI", "status": "Normal", "team": "Delhi Capitals", "role": "Bowler"},
+                    {"name": "Jofra Archer", "position": "Playing-XI", "status": "Normal", "team": "Rajasthan Royals", "role": "Bowler"},
+                    {"name": "Priyansh Arya", "position": "Swap-Player", "status": "Normal", "team": "Punjab Kings", "role": "Emer-Batsman"},
+                    {"name": "Washington Sundar", "position": "Bench", "status": "Normal", "team": "Gujarat Titans", "role": "Emer-All-Rounder"},
+                    {"name": "Mayank Yadav", "position": "Bench", "status": "Normal", "team": "Lucknow Super Giants", "role": "Emer-Bowler"},
                 ]
             },
             {
-                name: "Team Rajesh",
-                teamWinner: "India",
+                name: "Team Ronak",
+                teamWinner: "Mumbai Indians",
                 players: [
-                    { name: "Mitchell Marsh", team: "Australia", role: "Batsman", status: "Vice-Captain" },
-                    { name: "Aiden Markram", team: "South Africa", role: "Batsman", status: "Normal" },
-                    { name: "Abhishek Sharma", team: "India", role: "Batsman", status: "Captain" },
-                    { name: "Jos Buttler", team: "England", role: "Batsman", status: "Normal" },
-                    { name: "Marco Jansen", team: "South Africa", role: "All-Rounder", status: "Normal" },
-                    { name: "Sam Curran", team: "England", role: "All-Rounder", status: "Normal" },
-                    { name: "Daryl Mitchell", team: "New Zealand", role: "All-Rounder", status: "Normal" },
-                    { name: "Jasprit Bumrah", team: "India", role: "Bowler", status: "Normal" },
-                    { name: "Mitchell Santner", team: "New Zealand", role: "Bowler", status: "Normal" },
-                    { name: "Varun Chakravarthy", team: "India", role: "Bowler", status: "Normal" },
-                    { name: "Adam Zampa", team: "Australia", role: "Bowler", status: "Normal" }
+                    {"name": "Sanju Samson", "position": "Playing-XI", "status": "Captain", "team": "Chennai Super Kings", "role": "Batsman"},
+                    {"name": "Rohit Sharma", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "Batsman"},
+                    {"name": "Ishan Kishan", "position": "Playing-XI", "status": "Normal", "team": "Sunrisers Hyderabad", "role": "Batsman"},
+                    {"name": "Yashasvi Jaiswal", "position": "Playing-XI", "status": "Normal", "team": "Rajasthan Royals", "role": "Batsman"},
+                    {"name": "Axar Patel", "position": "Playing-XI", "status": "Vice-Captain", "team": "Delhi Capitals", "role": "All-Rounder"},
+                    {"name": "Hardik Pandya", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "All-Rounder"},
+                    {"name": "Sunil Narine", "position": "Playing-XI", "status": "Normal", "team": "Kolkata Knight Riders", "role": "All-Rounder"},
+                    {"name": "Jasprit Bumrah", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "Bowler"},
+                    {"name": "Yuzvendra Chahal", "position": "Ruled-Out", "status": "Normal", "team": "Punjab Kings", "role": "Bowler"},
+                    {"name": "Mohammed Siraj", "position": "Playing-XI", "status": "Normal", "team": "Gujarat Titans", "role": "Bowler"},
+                    {"name": "Varun Chakravarthy", "position": "Playing-XI", "status": "Normal", "team": "Kolkata Knight Riders", "role": "Bowler"},
+                    {"name": "Virat Kohli", "position": "Bench", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "Emer-Batsman"},
+                    {"name": "Marcus Stoinis", "position": "Bench", "status": "Normal", "team": "Punjab Kings", "role": "Emer-All-Rounder"},
+                    {"name": "Arshdeep Singh", "position": "Swap-Player", "status": "Normal", "team": "Punjab Kings", "role": "Emer-Bowler"},
                 ]
             },
             {
-                name: "Team Vinay",
-                teamWinner: "India",
+                name: "Team Ronak - 2",
+                teamWinner: "Mumbai Indians",
                 players: [
-                    { name: "Phil Salt", team: "England", role: "Batsman", status: "Normal" },
-                    { name: "Dewald Brevis", team: "South Africa", role: "Batsman", status: "Normal" },
-                    { name: "Ishan Kishan", team: "India", role: "Batsman", status: "Vice-Captain" },
-                    { name: "Travis Head", team: "Australia", role: "Batsman", status: "Normal" },
-                    { name: "Cameron Green", team: "Australia", role: "All-Rounder", status: "Captain" },
-                    { name: "Daryl Mitchell", team: "New Zealand", role: "All-Rounder", status: "Normal" },
-                    { name: "Hardik Pandya", team: "India", role: "All-Rounder", status: "Normal" },
-                    { name: "Kuldeep Yadav", team: "India", role: "Bowler", status: "Normal" },
-                    { name: "Mitchell Santner", team: "New Zealand", role: "Bowler", status: "Normal" },
-                    { name: "Keshav Maharaj", team: "South Africa", role: "Bowler", status: "Normal" },
-                    { name: "Jofra Archer", team: "England", role: "Bowler", status: "Normal" }
+                    {"name": "Abhishek Sharma", "position": "Playing-XI", "status": "Normal", "team": "Sunrisers Hyderabad", "role": "Batsman"},
+                    {"name": "Ruturaj Gaikwad", "position": "Playing-XI", "status": "Captain", "team": "Chennai Super Kings", "role": "Batsman"},
+                    {"name": "Shubman Gill", "position": "Playing-XI", "status": "Normal", "team": "Gujarat Titans", "role": "Batsman"},
+                    {"name": "Rishabh Pant", "position": "Playing-XI", "status": "Vice-Captain", "team": "Lucknow Super Giants", "role": "Batsman"},
+                    {"name": "Cameron Green", "position": "Playing-XI", "status": "Normal", "team": "Kolkata Knight Riders", "role": "All-Rounder"},
+                    {"name": "Ravindra Jadeja", "position": "Playing-XI", "status": "Normal", "team": "Rajasthan Royals", "role": "All-Rounder"},
+                    {"name": "Axar Patel", "position": "Playing-XI", "status": "Normal", "team": "Delhi Capitals", "role": "All-Rounder"},
+                    {"name": "Jasprit Bumrah", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "Bowler"},
+                    {"name": "Arshdeep Singh", "position": "Playing-XI", "status": "Normal", "team": "Punjab Kings", "role": "Bowler"},
+                    {"name": "Kuldeep Yadav", "position": "Playing-XI", "status": "Normal", "team": "Delhi Capitals", "role": "Bowler"},
+                    {"name": "Prasidh Krishna", "position": "Playing-XI", "status": "Normal", "team": "Gujarat Titans", "role": "Bowler"},
+                    {"name": "Finn Allen", "position": "Bench", "status": "Normal", "team": "Kolkata Knight Riders", "role": "Emer-Batsman"},
+                    {"name": "Hardik Pandya", "position": "Bench", "status": "Normal", "team": "Mumbai Indians", "role": "Emer-All-Rounder"},
+                    {"name": "Varun Chakravarthy", "position": "Bench", "status": "Normal", "team": "Kolkata Knight Riders", "role": "Emer-Bowler"},
+                ]
+            },
+            {
+                name: "Team Rajan",
+                teamWinner: "Rajasthan Royals",
+                players: [
+                    {"name": "Vaibhav Suryavanshi", "position": "Playing-XI", "status": "Normal", "team": "Rajasthan Royals", "role": "Batsman"},
+                    {"name": "Shubman Gill", "position": "Playing-XI", "status": "Normal", "team": "Gujarat Titans", "role": "Batsman"},
+                    {"name": "Ruturaj Gaikwad", "position": "Playing-XI", "status": "Vice-Captain", "team": "Chennai Super Kings", "role": "Batsman"},
+                    {"name": "Abhishek Sharma", "position": "Playing-XI", "status": "Normal", "team": "Sunrisers Hyderabad", "role": "Batsman"},
+                    {"name": "Hardik Pandya", "position": "Playing-XI", "status": "Captain", "team": "Mumbai Indians", "role": "All-Rounder"},
+                    {"name": "Ravindra Jadeja", "position": "Playing-XI", "status": "Normal", "team": "Rajasthan Royals", "role": "All-Rounder"},
+                    {"name": "Krunal Pandya", "position": "Playing-XI", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "All-Rounder"},
+                    {"name": "Mohammed Siraj", "position": "Playing-XI", "status": "Normal", "team": "Gujarat Titans", "role": "Bowler"},
+                    {"name": "Rashid Khan", "position": "Playing-XI", "status": "Normal", "team": "Gujarat Titans", "role": "Bowler"},
+                    {"name": "Trent Boult", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "Bowler"},
+                    {"name": "Kuldeep Yadav", "position": "Playing-XI", "status": "Normal", "team": "Delhi Capitals", "role": "Bowler"},
+                    {"name": "Aiden Markram", "position": "Bench", "status": "Normal", "team": "Lucknow Super Giants", "role": "Emer-Batsman"},
+                    {"name": "Cameron Green", "position": "Bench", "status": "Normal", "team": "Kolkata Knight Riders", "role": "Emer-All-Rounder"},
+                    {"name": "Khaleel Ahmed", "position": "Bench", "status": "Normal", "team": "Chennai Super Kings", "role": "Emer-Bowler"},
                 ]
             },
             {
                 name: "Team Rajat",
-                teamWinner: "India",
+                teamWinner: "Mumbai Indians",
                 players: [
-                    { name: "Abhishek Sharma", team: "India", role: "Batsman", status: "Captain" },
-                    { name: "Travis Head", team: "Australia", role: "Batsman", status: "Normal" },
-                    { name: "Suryakumar Yadav", team: "India", role: "Batsman", status: "Normal" },
-                    { name: "Ryan Rickelton", team: "South Africa", role: "Batsman", status: "Normal" },
-                    { name: "Hardik Pandya", team: "India", role: "All-Rounder", status: "Vice-Captain" },
-                    { name: "Cameron Green", team: "Australia", role: "All-Rounder", status: "Normal" },
-                    { name: "Marco Jansen", team: "South Africa", role: "All-Rounder", status: "Normal" },
-                    { name: "Mitchell Santner", team: "New Zealand", role: "Bowler", status: "Normal" },
-                    { name: "Jacob Duffy", team: "New Zealand", role: "Bowler", status: "Normal" },
-                    { name: "Maheesh Theekshana", team: "Sri Lanka", role: "Bowler", status: "Normal" },
-                    { name: "Adil Rashid", team: "England", role: "Bowler", status: "Normal" }
+                    {"name": "Vaibhav Suryavanshi", "position": "Playing-XI", "status": "Normal", "team": "Rajasthan Royals", "role": "Batsman"},
+                    {"name": "Sanju Samson", "position": "Ruled-Out", "status": "Normal", "team": "Chennai Super Kings", "role": "Batsman"},
+                    {"name": "Abhishek Sharma", "position": "Playing-XI", "status": "Captain", "team": "Sunrisers Hyderabad", "role": "Batsman"},
+                    {"name": "KL Rahul", "position": "Playing-XI", "status": "Normal", "team": "Delhi Capitals", "role": "Batsman"},
+                    {"name": "Hardik Pandya", "position": "Playing-XI", "status": "Vice-Captain", "team": "Mumbai Indians", "role": "All-Rounder"},
+                    {"name": "Axar Patel", "position": "Playing-XI", "status": "Normal", "team": "Delhi Capitals", "role": "All-Rounder"},
+                    {"name": "Ravindra Jadeja", "position": "Playing-XI", "status": "Normal", "team": "Rajasthan Royals", "role": "All-Rounder"},
+                    {"name": "Marco Jansen", "position": "Playing-XI", "status": "Normal", "team": "Punjab Kings", "role": "Bowler"},
+                    {"name": "Jasprit Bumrah", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "Bowler"},
+                    {"name": "Varun Chakravarthy", "position": "Playing-XI", "status": "Normal", "team": "Kolkata Knight Riders", "role": "Bowler"},
+                    {"name": "Arshdeep Singh", "position": "Playing-XI", "status": "Normal", "team": "Punjab Kings", "role": "Bowler"},
+                    {"name": "Virat Kohli", "position": "Swap-Player", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "Emer-Batsman"},
+                    {"name": "Marcus Stoinis", "position": "Bench", "status": "Normal", "team": "Punjab Kings", "role": "Emer-All-Rounder"},
+                    {"name": "Mohammed Siraj", "position": "Bench", "status": "Normal", "team": "Gujarat Titans", "role": "Emer-Bowler"},
                 ]
-            }
+            },
+            {
+                name: "Team Rajesh",
+                teamWinner: "Royal Challengers Bangalore",
+                players: [
+                    {"name": "Virat Kohli", "position": "Playing-XI", "status": "Captain", "team": "Royal Challengers Bangalore", "role": "Batsman"},
+                    {"name": "Shreyas Iyer", "position": "Playing-XI", "status": "Normal", "team": "Punjab Kings", "role": "Batsman"},
+                    {"name": "Shubman Gill", "position": "Playing-XI", "status": "Normal", "team": "Gujarat Titans", "role": "Batsman"},
+                    {"name": "KL Rahul", "position": "Playing-XI", "status": "Normal", "team": "Delhi Capitals", "role": "Batsman"},
+                    {"name": "Hardik Pandya", "position": "Playing-XI", "status": "Vice-Captain", "team": "Mumbai Indians", "role": "All-Rounder"},
+                    {"name": "Axar Patel", "position": "Playing-XI", "status": "Normal", "team": "Delhi Capitals", "role": "All-Rounder"},
+                    {"name": "Sunil Narine", "position": "Playing-XI", "status": "Normal", "team": "Kolkata Knight Riders", "role": "All-Rounder"},
+                    {"name": "Jasprit Bumrah", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "Bowler"},
+                    {"name": "Varun Chakravarthy", "position": "Playing-XI", "status": "Normal", "team": "Kolkata Knight Riders", "role": "Bowler"},
+                    {"name": "Arshdeep Singh", "position": "Playing-XI", "status": "Normal", "team": "Punjab Kings", "role": "Bowler"},
+                    {"name": "Rashid Khan", "position": "Playing-XI", "status": "Normal", "team": "Gujarat Titans", "role": "Bowler"},
+                    {"name": "Nicholas Pooran", "position": "Bench", "status": "Normal", "team": "Lucknow Super Giants", "role": "Emer-Batsman"},
+                    {"name": "Ravindra Jadeja", "position": "Bench", "status": "Normal", "team": "Rajasthan Royals", "role": "Emer-All-Rounder"},
+                    {"name": "Josh Hazlewood", "position": "Bench", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "Emer-Bowler"},
+                ]
+            },
+            {
+                name: "Team Rohit (RJ 11)",
+                teamWinner: "Mumbai Indians",
+                players: [
+                    {"name": "Yashasvi Jaiswal", "position": "Playing-XI", "status": "Normal", "team": "Rajasthan Royals", "role": "Batsman"},
+                    {"name": "Shubman Gill", "position": "Playing-XI", "status": "Normal", "team": "Gujarat Titans", "role": "Batsman"},
+                    {"name": "Tilak Varma", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "Batsman"},
+                    {"name": "Phil Salt", "position": "Ruled-Out", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "Batsman"},
+                    {"name": "Hardik Pandya", "position": "Ruled-Out", "status": "Captain", "team": "Mumbai Indians", "role": "All-Rounder"},
+                    {"name": "Marcus Stoinis", "position": "Playing-XI", "status": "Normal", "team": "Punjab Kings", "role": "All-Rounder"},
+                    {"name": "Axar Patel", "position": "Playing-XI", "status": "Vice-Captain", "team": "Delhi Capitals", "role": "All-Rounder"},
+                    {"name": "Jasprit Bumrah", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "Bowler"},
+                    {"name": "Noor Ahmad", "position": "Playing-XI", "status": "Normal", "team": "Chennai Super Kings", "role": "Bowler"},
+                    {"name": "Varun Chakravarthy", "position": "Playing-XI", "status": "Normal", "team": "Kolkata Knight Riders", "role": "Bowler"},
+                    {"name": "Kuldeep Yadav", "position": "Playing-XI", "status": "Normal", "team": "Delhi Capitals", "role": "Bowler"},
+                    {"name": "Virat Kohli", "position": "Swap-Player", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "Emer-Batsman"},
+                    {"name": "Ravindra Jadeja", "position": "Swap-Player", "status": "Captain", "team": "Rajasthan Royals", "role": "Emer-All-Rounder"},
+                    {"name": "Arshdeep Singh", "position": "Bench", "status": "Normal", "team": "Punjab Kings", "role": "Emer-Bowler"},
+                ]
+            },
+            {
+                name: "Team Sagar",
+                teamWinner: "Mumbai Indians",
+                players: [
+                    {"name": "Virat Kohli", "position": "Playing-XI", "status": "Captain", "team": "Royal Challengers Bangalore", "role": "Batsman"},
+                    {"name": "KL Rahul", "position": "Playing-XI", "status": "Vice-Captain", "team": "Delhi Capitals", "role": "Batsman"},
+                    {"name": "Ruturaj Gaikwad", "position": "Playing-XI", "status": "Normal", "team": "Chennai Super Kings", "role": "Batsman"},
+                    {"name": "Aiden Markram", "position": "Ruled-Out", "status": "Normal", "team": "Lucknow Super Giants", "role": "Batsman"},
+                    {"name": "Hardik Pandya", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "All-Rounder"},
+                    {"name": "Axar Patel", "position": "Playing-XI", "status": "Normal", "team": "Delhi Capitals", "role": "All-Rounder"},
+                    {"name": "Ravindra Jadeja", "position": "Playing-XI", "status": "Normal", "team": "Rajasthan Royals", "role": "All-Rounder"},
+                    {"name": "Jasprit Bumrah", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "Bowler"},
+                    {"name": "Marco Jansen", "position": "Playing-XI", "status": "Normal", "team": "Punjab Kings", "role": "Bowler"},
+                    {"name": "Kuldeep Yadav", "position": "Playing-XI", "status": "Normal", "team": "Delhi Capitals", "role": "Bowler"},
+                    {"name": "Mohammed Siraj", "position": "Playing-XI", "status": "Normal", "team": "Gujarat Titans", "role": "Bowler"},
+                    {"name": "Shreyas Iyer", "position": "Swap-Player", "status": "Normal", "team": "Punjab Kings", "role": "Emer-Batsman"},
+                    {"name": "Jason Holder", "position": "Bench", "status": "Normal", "team": "Gujarat Titans", "role": "Emer-All-Rounder"},
+                    {"name": "Josh Hazlewood", "position": "Bench", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "Emer-Bowler"},
+                ]
+            },
+            {
+                name: "Team Sanjil",
+                teamWinner: "Mumbai Indians",
+                players: [
+                    {"name": "Virat Kohli", "position": "Playing-XI", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "Batsman"},
+                    {"name": "Shubman Gill", "position": "Playing-XI", "status": "Normal", "team": "Gujarat Titans", "role": "Batsman"},
+                    {"name": "Suryakumar Yadav", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "Batsman"},
+                    {"name": "Ruturaj Gaikwad", "position": "Ruled-Out", "status": "Normal", "team": "Chennai Super Kings", "role": "Batsman"},
+                    {"name": "Hardik Pandya", "position": "Playing-XI", "status": "Captain", "team": "Mumbai Indians", "role": "All-Rounder"},
+                    {"name": "Ravindra Jadeja", "position": "Playing-XI", "status": "Vice-Captain", "team": "Rajasthan Royals", "role": "All-Rounder"},
+                    {"name": "Sunil Narine", "position": "Playing-XI", "status": "Normal", "team": "Kolkata Knight Riders", "role": "All-Rounder"},
+                    {"name": "Jasprit Bumrah", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "Bowler"},
+                    {"name": "Rashid Khan", "position": "Playing-XI", "status": "Normal", "team": "Gujarat Titans", "role": "Bowler"},
+                    {"name": "Mohammed Shami", "position": "Playing-XI", "status": "Normal", "team": "Lucknow Super Giants", "role": "Bowler"},
+                    {"name": "Kuldeep Yadav", "position": "Playing-XI", "status": "Normal", "team": "Delhi Capitals", "role": "Bowler"},
+                    {"name": "KL Rahul", "position": "Swap-Player", "status": "Normal", "team": "Delhi Capitals", "role": "Emer-Batsman"},
+                    {"name": "Marcus Stoinis", "position": "Bench", "status": "Normal", "team": "Punjab Kings", "role": "Emer-All-Rounder"},
+                    {"name": "Arshdeep Singh", "position": "Bench", "status": "Normal", "team": "Punjab Kings", "role": "Emer-Bowler"},
+                ]
+            },
+            {
+                name: "Team Sannkalp Mahajan",
+                teamWinner: "Chennai Super Kings",
+                players: [
+                    {"name": "Sanju Samson", "position": "Playing-XI", "status": "Vice-Captain", "team": "Chennai Super Kings", "role": "Batsman"},
+                    {"name": "Rohit Sharma", "position": "Playing-XI", "status": "Captain", "team": "Mumbai Indians", "role": "Batsman"},
+                    {"name": "Ishan Kishan", "position": "Playing-XI", "status": "Normal", "team": "Sunrisers Hyderabad", "role": "Batsman"},
+                    {"name": "Virat Kohli", "position": "Playing-XI", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "Batsman"},
+                    {"name": "Hardik Pandya", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "All-Rounder"},
+                    {"name": "Axar Patel", "position": "Playing-XI", "status": "Normal", "team": "Delhi Capitals", "role": "All-Rounder"},
+                    {"name": "Ravindra Jadeja", "position": "Playing-XI", "status": "Normal", "team": "Rajasthan Royals", "role": "All-Rounder"},
+                    {"name": "Jasprit Bumrah", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "Bowler"},
+                    {"name": "Varun Chakravarthy", "position": "Playing-XI", "status": "Normal", "team": "Kolkata Knight Riders", "role": "Bowler"},
+                    {"name": "Arshdeep Singh", "position": "Playing-XI", "status": "Normal", "team": "Punjab Kings", "role": "Bowler"},
+                    {"name": "Bhuvneshwar Kumar", "position": "Playing-XI", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "Bowler"},
+                    {"name": "Abhishek Sharma", "position": "Bench", "status": "Normal", "team": "Sunrisers Hyderabad", "role": "Emer-Batsman"},
+                    {"name": "Krunal Pandya", "position": "Bench", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "Emer-All-Rounder"},
+                    {"name": "Trent Boult", "position": "Bench", "status": "Normal", "team": "Mumbai Indians", "role": "Emer-Bowler"},
+                ]
+            },
+            {
+                name: "Team Vaibhav",
+                teamWinner: "Mumbai Indians",
+                players: [
+                    {"name": "Virat Kohli", "position": "Playing-XI", "status": "Captain", "team": "Royal Challengers Bangalore", "role": "Batsman"},
+                    {"name": "Sanju Samson", "position": "Playing-XI", "status": "Normal", "team": "Chennai Super Kings", "role": "Batsman"},
+                    {"name": "Shubman Gill", "position": "Playing-XI", "status": "Vice-Captain", "team": "Gujarat Titans", "role": "Batsman"},
+                    {"name": "Ishan Kishan", "position": "Playing-XI", "status": "Normal", "team": "Sunrisers Hyderabad", "role": "Batsman"},
+                    {"name": "Hardik Pandya", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "All-Rounder"},
+                    {"name": "Axar Patel", "position": "Playing-XI", "status": "Normal", "team": "Delhi Capitals", "role": "All-Rounder"},
+                    {"name": "Marcus Stoinis", "position": "Playing-XI", "status": "Normal", "team": "Punjab Kings", "role": "All-Rounder"},
+                    {"name": "Rashid Khan", "position": "Playing-XI", "status": "Normal", "team": "Gujarat Titans", "role": "Bowler"},
+                    {"name": "Varun Chakravarthy", "position": "Playing-XI", "status": "Normal", "team": "Kolkata Knight Riders", "role": "Bowler"},
+                    {"name": "Jasprit Bumrah", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "Bowler"},
+                    {"name": "Mohammed Siraj", "position": "Playing-XI", "status": "Normal", "team": "Gujarat Titans", "role": "Bowler"},
+                    {"name": "Shimron Hetmyer", "position": "Bench", "status": "Normal", "team": "Rajasthan Royals", "role": "Emer-Batsman"},
+                    {"name": "Ravindra Jadeja", "position": "Bench", "status": "Normal", "team": "Rajasthan Royals", "role": "Emer-All-Rounder"},
+                    {"name": "Marco Jansen", "position": "Bench", "status": "Normal", "team": "Punjab Kings", "role": "Emer-Bowler"},
+                ]
+            },
+            {
+                name: "Team Vinay",
+                teamWinner: "Punjab Kings",
+                players: [
+                    {"name": "Sanju Samson", "position": "Playing-XI", "status": "Captain", "team": "Chennai Super Kings", "role": "Batsman"},
+                    {"name": "Virat Kohli", "position": "Playing-XI", "status": "Vice-Captain", "team": "Royal Challengers Bangalore", "role": "Batsman"},
+                    {"name": "KL Rahul", "position": "Playing-XI", "status": "Normal", "team": "Delhi Capitals", "role": "Batsman"},
+                    {"name": "Vaibhav Suryavanshi", "position": "Playing-XI", "status": "Normal", "team": "Rajasthan Royals", "role": "Batsman"},
+                    {"name": "Sunil Narine", "position": "Playing-XI", "status": "Normal", "team": "Kolkata Knight Riders", "role": "All-Rounder"},
+                    {"name": "Hardik Pandya", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "All-Rounder"},
+                    {"name": "Krunal Pandya", "position": "Playing-XI", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "All-Rounder"},
+                    {"name": "Sai Kishore", "position": "Ruled-Out", "status": "Normal", "team": "Gujarat Titans", "role": "Bowler"},
+                    {"name": "Jasprit Bumrah", "position": "Playing-XI", "status": "Normal", "team": "Mumbai Indians", "role": "Bowler"},
+                    {"name": "Arshdeep Singh", "position": "Playing-XI", "status": "Normal", "team": "Punjab Kings", "role": "Bowler"},
+                    {"name": "Harshal Patel", "position": "Playing-XI", "status": "Normal", "team": "Sunrisers Hyderabad", "role": "Bowler"},
+                    {"name": "Rohit Sharma", "position": "Bench", "status": "Normal", "team": "Mumbai Indians", "role": "Emer-Batsman"},
+                    {"name": "Axar Patel", "position": "Bench", "status": "Normal", "team": "Delhi Capitals", "role": "Emer-All-Rounder"},
+                    {"name": "Josh Hazlewood", "position": "Swap-Player", "status": "Normal", "team": "Royal Challengers Bangalore", "role": "Emer-Bowler"},
+                ]
+            },
+            {
+                name: "Team VM",
+                teamWinner: "Mumbai Indians",
+                players: [
+                    {"name": "Sai Sudharsan", "position": "Playing-XI", "status": "Normal", "team": "Gujarat Titans", "role": "Batsman"},
+                    {"name": "Abhishek Sharma", "position": "Playing-XI", "status": "Normal", "team": "Sunrisers Hyderabad", "role": "Batsman"},
+                    {"name": "Aiden Markram", "position": "Playing-XI", "status": "Normal", "team": "Lucknow Super Giants", "role": "Batsman"},
+                    {"name": "Finn Allen", "position": "Ruled-Out", "status": "Captain", "team": "Kolkata Knight Riders", "role": "Batsman"},
+                    {"name": "Jason Holder", "position": "Playing-XI", "status": "Normal", "team": "Gujarat Titans", "role": "All-Rounder"},
+                    {"name": "Cameron Green", "position": "Playing-XI", "status": "Normal", "team": "Kolkata Knight Riders", "role": "All-Rounder"},
+                    {"name": "Axar Patel", "position": "Playing-XI", "status": "Normal", "team": "Delhi Capitals", "role": "All-Rounder"},
+                    {"name": "Mohammed Siraj", "position": "Playing-XI", "status": "Normal", "team": "Gujarat Titans", "role": "Bowler"},
+                    {"name": "Vipraj Nigam", "position": "Playing-XI", "status": "Normal", "team": "Delhi Capitals", "role": "Bowler"},
+                    {"name": "Khaleel Ahmed", "position": "Ruled-Out", "status": "Normal", "team": "Chennai Super Kings", "role": "Bowler"},
+                    {"name": "Josh Hazlewood", "position": "Playing-XI", "status": "Vice-Captain", "team": "Royal Challengers Bangalore", "role": "Bowler"},
+                    {"name": "Virat Kohli", "position": "Swap-Player", "status": "Captain", "team": "Royal Challengers Bangalore", "role": "Emer-Batsman"},
+                    {"name": "Hardik Pandya", "position": "Bench", "status": "Normal", "team": "Mumbai Indians", "role": "Emer-All-Rounder"},
+                    {"name": "Varun Chakravarthy", "position": "Swap-Player", "status": "Normal", "team": "Kolkata Knight Riders", "role": "Emer-Bowler"},
+                ]
+            },
         ];
 
         // Player points - will be updated from API
@@ -751,18 +1167,21 @@
             });
         }
 
-        // Calculate team points with captain/VC multipliers
+        // Per-player contribution (handles position: Playing-XI / Ruled-Out / Bench / Swap-Player)
+        const SWAP_PENALTY = { "Normal": -200, "Vice-Captain": -300, "Captain": -400 };
+
+        function playerContribution(player) {
+            if (player.position === "Bench") return 0;
+            if (player.position === "Swap-Player") return SWAP_PENALTY[player.status] || -200;
+            // Playing-XI or Ruled-Out: count base points with multiplier
+            const base = playerPoints[player.name] || 0;
+            const mult = player.status === "Captain" ? 2 : player.status === "Vice-Captain" ? 1.5 : 1;
+            return base * mult;
+        }
+
         function calculateTeamPoints(team) {
             let total = 0;
-            team.players.forEach(player => {
-                let points = playerPoints[player.name] || 0;
-                if (player.status === "Captain") {
-                    points *= 2;
-                } else if (player.status === "Vice-Captain") {
-                    points *= 1.5;
-                }
-                total += points;
-            });
+            team.players.forEach(p => { total += playerContribution(p); });
             return Math.round(total * 10) / 10;
         }
 
@@ -797,28 +1216,31 @@
                         </div>
                         <div class="team-players">
                             ${team.players.map(player => {
-                                let points = playerPoints[player.name] || 0;
-                                let multipliedPoints = points;
+                                const contrib = playerContribution(player);
                                 let badge = '';
                                 let isMultiplied = false;
+                                let posTag = '';
 
                                 if (player.status === "Captain") {
-                                    multipliedPoints = points * 2;
                                     badge = '<span class="badge badge-captain">C</span>';
                                     isMultiplied = true;
                                 } else if (player.status === "Vice-Captain") {
-                                    multipliedPoints = points * 1.5;
                                     badge = '<span class="badge badge-vc">VC</span>';
                                     isMultiplied = true;
                                 }
+                                if (player.position === "Bench") posTag = '<span class="pos-tag pos-bench">Bench</span>';
+                                else if (player.position === "Swap-Player") posTag = '<span class="pos-tag pos-swap">Swap</span>';
+                                else if (player.position === "Ruled-Out") posTag = '<span class="pos-tag pos-out">Out</span>';
 
+                                const dim = (player.position === "Bench") ? ' dim' : '';
                                 return `
-                                    <div class="player-row">
+                                    <div class="player-row${dim}">
                                         <div class="player-info">
                                             ${badge}
                                             <span class="player-name">${player.name}</span>
+                                            ${posTag}
                                         </div>
-                                        <span class="player-points ${isMultiplied ? 'multiplied' : ''}">${Math.round(multipliedPoints * 10) / 10}</span>
+                                        <span class="player-points ${isMultiplied ? 'multiplied' : ''}">${Math.round(contrib * 10) / 10}</span>
                                     </div>
                                 `;
                             }).join('')}
@@ -919,66 +1341,7 @@
         };
 
         // Sample points for testing (can be called from console)
-        window.loadSamplePoints = function() {
-            const samplePoints = {
-                "Abhishek Sharma": 156,
-                "Ishan Kishan": 134,
-                "Travis Head": 189,
-                "Phil Salt": 112,
-                "Hardik Pandya": 178,
-                "Marco Jansen": 145,
-                "Sam Curran": 132,
-                "Adam Zampa": 98,
-                "Matheesha Pathirana": 87,
-                "Keshav Maharaj": 76,
-                "Mitchell Santner": 104,
-                "Fakhar Zaman": 89,
-                "Marcus Stoinis": 143,
-                "Jamie Overton": 67,
-                "Matt Henry": 82,
-                "Varun Chakravarthy": 115,
-                "Naseem Shah": 94,
-                "Aiden Markram": 108,
-                "Rashid Khan": 127,
-                "Adil Rashid": 89,
-                "Akeal Hosein": 73,
-                "Suryakumar Yadav": 167,
-                "Jos Buttler": 145,
-                "Daryl Mitchell": 118,
-                "Kagiso Rabada": 132,
-                "Jofra Archer": 98,
-                "Mitchell Marsh": 156,
-                "Tim Seifert": 78,
-                "Cameron Green": 112,
-                "Jacob Duffy": 45,
-                "Dushmantha Chameera": 56,
-                "Saim Ayub": 87,
-                "Romario Shepherd": 65,
-                "Quinton de Kock": 178,
-                "Axar Patel": 95,
-                "Rachin Ravindra": 108,
-                "Jasprit Bumrah": 156,
-                "Lockie Ferguson": 89,
-                "Ryan Rickelton": 67,
-                "Mohammad Nawaz": 54,
-                "Arshdeep Singh": 112,
-                "Ben Dwarshuis": 45,
-                "Anrich Nortje": 78,
-                "Glenn Phillips": 123,
-                "Tilak Varma": 89,
-                "Azmatullah Omarzai": 56,
-                "Lungi Ngidi": 87,
-                "Noor Ahmad": 67,
-                "Abrar Ahmed": 78,
-                "Xavier Bartlett": 56,
-                "Dewald Brevis": 98,
-                "Finn Allen": 112,
-                "Shadab Khan": 76,
-                "Wanindu Hasaranga": 98,
-                "Kuldeep Yadav": 89
-            };
-            updatePlayerPoints(samplePoints);
-        };
+        // Sample data fn removed for IPL 2026 reset
 
         // Initialize and auto-load data
         initializePlayerPoints();
@@ -1037,7 +1400,7 @@
             btnText.textContent = 'Update Scores';
         }
 
-        console.log('T20 Fantasy Dashboard loaded!');
+        console.log('IPL 2026 Fantasy Dashboard loaded!');
     </script>
 </body>
 </html>
