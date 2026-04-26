@@ -316,6 +316,16 @@
         .pos-swap { background: #f97316; color: #fff; }
         .pos-out { background: #6b7280; color: #fff; }
         .player-row.dim { opacity: 0.55; }
+        .swap-penalty {
+            display: inline-block;
+            margin-left: 6px;
+            font-size: 0.7rem;
+            padding: 1px 6px;
+            border-radius: 8px;
+            background: #b91c1c;
+            color: #fff;
+            font-weight: 600;
+        }
 
         @media (max-width: 768px) {
             .header h1 {
@@ -1149,7 +1159,8 @@
         ];
 
         // Player points - will be updated from API
-        let playerPoints = {};
+        let playerPoints = {};   // live S3 lifetime points
+        let startingPoints = {}; // PDF baseline (frozen / pre-swap snapshot)
 
         // Initialize with sample data (0 points until refreshed)
         function initializePlayerPoints() {
@@ -1167,16 +1178,44 @@
             });
         }
 
-        // Per-player contribution (handles position: Playing-XI / Ruled-Out / Bench / Swap-Player)
+        // Per-player contribution
+        // - Playing-XI: live * mult (full lifetime, ongoing)
+        // - Ruled-Out (gray, OUT): starting * mult (frozen at PDF baseline)
+        // - Swap-Player (orange, IN): penalty + (live - starting) * mult (post-swap deltas only)
+        // - Bench: 0
         const SWAP_PENALTY = { "Normal": -200, "Vice-Captain": -300, "Captain": -400 };
 
+        function multFor(status) {
+            return status === "Captain" ? 2 : status === "Vice-Captain" ? 1.5 : 1;
+        }
+
         function playerContribution(player) {
+            const mult = multFor(player.status);
             if (player.position === "Bench") return 0;
-            if (player.position === "Swap-Player") return SWAP_PENALTY[player.status] || -200;
-            // Playing-XI or Ruled-Out: count base points with multiplier
-            const base = playerPoints[player.name] || 0;
-            const mult = player.status === "Captain" ? 2 : player.status === "Vice-Captain" ? 1.5 : 1;
-            return base * mult;
+            if (player.position === "Ruled-Out") {
+                const frozen = startingPoints[player.name] || 0;
+                return frozen * mult;
+            }
+            if (player.position === "Swap-Player") {
+                const baseline = startingPoints[player.name] || 0;
+                const live = playerPoints[player.name] || 0;
+                const postSwap = live - baseline;
+                const penalty = SWAP_PENALTY[player.status] || -200;
+                return penalty + postSwap * mult;
+            }
+            // Playing-XI: full live * mult
+            const live = playerPoints[player.name] || 0;
+            return live * mult;
+        }
+
+        // Helper for the UI - returns components of a swap player's contribution
+        function swapBreakdown(player) {
+            const baseline = startingPoints[player.name] || 0;
+            const live = playerPoints[player.name] || 0;
+            const postSwap = live - baseline;
+            const mult = multFor(player.status);
+            const penalty = SWAP_PENALTY[player.status] || -200;
+            return { postSwap: postSwap * mult, penalty };
         }
 
         function calculateTeamPoints(team) {
@@ -1229,10 +1268,25 @@
                                     isMultiplied = true;
                                 }
                                 if (player.position === "Bench") posTag = '<span class="pos-tag pos-bench">Bench</span>';
-                                else if (player.position === "Swap-Player") posTag = '<span class="pos-tag pos-swap">Swap</span>';
-                                else if (player.position === "Ruled-Out") posTag = '<span class="pos-tag pos-out">Out</span>';
+                                else if (player.position === "Swap-Player") posTag = '<span class="pos-tag pos-swap">Swap-In</span>';
+                                else if (player.position === "Ruled-Out") posTag = '<span class="pos-tag pos-out">Frozen</span>';
 
                                 const dim = (player.position === "Bench") ? ' dim' : '';
+
+                                // For Swap-In, show "post-swap delta + penalty" breakdown
+                                let pointsHtml;
+                                if (player.position === "Swap-Player") {
+                                    const { postSwap, penalty } = swapBreakdown(player);
+                                    const sign = postSwap >= 0 ? '+' : '';
+                                    pointsHtml = `
+                                        <span class="player-points multiplied" title="Post-swap: ${sign}${Math.round(postSwap * 10) / 10}, Penalty: ${penalty}">
+                                            ${sign}${Math.round(postSwap * 10) / 10}
+                                            <span class="swap-penalty">${penalty}</span>
+                                        </span>`;
+                                } else {
+                                    pointsHtml = `<span class="player-points ${isMultiplied ? 'multiplied' : ''}">${Math.round(contrib * 10) / 10}</span>`;
+                                }
+
                                 return `
                                     <div class="player-row${dim}">
                                         <div class="player-info">
@@ -1240,7 +1294,7 @@
                                             <span class="player-name">${player.name}</span>
                                             ${posTag}
                                         </div>
-                                        <span class="player-points ${isMultiplied ? 'multiplied' : ''}">${Math.round(contrib * 10) / 10}</span>
+                                        ${pointsHtml}
                                     </div>
                                 `;
                             }).join('')}
@@ -1267,6 +1321,7 @@
 
                 if (result.success && result.data) {
                     const fetchedPlayers = Object.keys(result.data).length;
+                    if (result.starting) Object.assign(startingPoints, result.starting);
 
                     if (fetchedPlayers > 0) {
                         Object.assign(playerPoints, result.data);
@@ -1353,12 +1408,13 @@
             try {
                 const response = await fetch('/api/players');
                 const result = await response.json();
+                if (result.starting) Object.assign(startingPoints, result.starting);
                 if (result.success && result.data && Object.keys(result.data).length > 0) {
                     Object.assign(playerPoints, result.data);
                     updateLastUpdated(result.lastUpdated);
                     renderLeaderboard();
                     renderTeams();
-                    console.log(`Auto-loaded ${result.count} players`);
+                    console.log(`Auto-loaded ${result.count} players (starting=${Object.keys(startingPoints).length})`);
                 }
             } catch (e) {
                 console.log('Auto-load failed');

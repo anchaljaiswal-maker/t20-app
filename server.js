@@ -17,6 +17,16 @@ const CACHE_DURATION = 60000; // 1 minute cache
 
 // Load existing data on startup
 const jsonPath = path.join(__dirname, 'player-points.json');
+const startingPath = path.join(__dirname, 'starting-points.json');
+let startingPoints = {};
+if (fs.existsSync(startingPath)) {
+    try {
+        startingPoints = JSON.parse(fs.readFileSync(startingPath, 'utf8'));
+        console.log(`Loaded ${Object.keys(startingPoints).length} starting points`);
+    } catch (e) {
+        console.log('No starting-points.json found');
+    }
+}
 if (fs.existsSync(jsonPath)) {
     try {
         cachedPoints = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
@@ -67,6 +77,7 @@ app.get('/api/players', (req, res) => {
         return res.json({
             success: true,
             data: cachedPoints,
+            starting: startingPoints,
             cached: true,
             count: Object.keys(cachedPoints).length,
             lastUpdated: lastFetchTime ? new Date(lastFetchTime).toISOString() : null,
@@ -78,6 +89,7 @@ app.get('/api/players', (req, res) => {
     res.json({
         success: true,
         data: {},
+        starting: startingPoints,
         cached: false,
         count: 0,
         message: 'Server starting up... Data will load in ~30 seconds.',
